@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>메리온니로드 디렉터 · Merry Only</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;0,6..96,700;1,6..96,500&family=Gowun+Dodum&display=swap');
+
+  :root{
+    --bg:#F3EAD8;
+    --bg-soft:#FBF6EC;
+    --card:#FBF6EC;
+    --text:#5C1826;
+    --mark:#7A2131;
+    --accent:#7A2131;
+    --line: rgba(122,33,49,.22);
+    --muted: rgba(92,24,38,.62);
+    --shadow: 0 1px 0 rgba(122,33,49,.15);
+    box-sizing:border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#5A0F19;
+      --bg-soft:#6E1520;
+      --card:#6E1520;
+      --text:#F6EFDC;
+      --mark:#E7C567;
+      --accent:#E7C567;
+      --line: rgba(231,197,103,.32);
+      --muted: rgba(246,239,220,.68);
+      --shadow: 0 1px 0 rgba(231,197,103,.18);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#5A0F19;
+    --bg-soft:#6E1520;
+    --card:#6E1520;
+    --text:#F6EFDC;
+    --mark:#E7C567;
+    --accent:#E7C567;
+    --line: rgba(231,197,103,.32);
+    --muted: rgba(246,239,220,.68);
+    --shadow: 0 1px 0 rgba(231,197,103,.18);
+  }
+
+  html{ scroll-behavior:smooth; scroll-padding-top: calc(72px + env(safe-area-inset-top,0px)); }
+  * { box-sizing:border-box; }
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 120% 60% at 50% -10%, rgba(122,33,49,.05), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Gowun Dodum','Malgun Gothic',sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) body{
+      background:
+        radial-gradient(ellipse 120% 70% at 50% -10%, rgba(231,197,103,.08), transparent 60%),
+        linear-gradient(180deg,#6E1520 0%, #4C0C15 100%);
+    }
+  }
+  :root[data-theme="dark"] body{
+    background:
+      radial-gradient(ellipse 120% 70% at 50% -10%, rgba(231,197,103,.08), transparent 60%),
+      linear-gradient(180deg,#6E1520 0%, #4C0C15 100%);
+  }
+
+  .disp{ font-family:'Bodoni Moda','Times New Roman',serif; }
+  a{ color:inherit; }
+  img,svg{ max-width:100%; }
+
+  .wrap{ max-width:1040px; margin:0 auto; padding:0 24px; }
+
+  /* ---------- NAV ---------- */
+  header.nav{
+    position:sticky; top:0; z-index:50;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--line);
+    padding-top: env(safe-area-inset-top,0px);
+  }
+  .nav-row{
+    max-width:1040px; margin:0 auto; padding:14px 24px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; text-decoration:none; }
+  .brand svg{ width:26px; height:26px; }
+  .brand-name{ font-family:'Bodoni Moda',serif; font-style:italic; font-size:20px; color:var(--mark); font-weight:500; }
+  nav.links{ display:flex; align-items:center; gap:26px; }
+  nav.links a{ text-decoration:none; font-size:14.5px; color:var(--text); opacity:.82; }
+  nav.links a:hover{ opacity:1; }
+  .status-badge{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:12.5px; padding:5px 12px; border:1px solid var(--line); border-radius:999px;
+    color:var(--mark);
+  }
+  .status-dot{ width:6px; height:6px; border-radius:50%; background:#6E9B5E; }
+  .menu-btn{ display:none; background:none; border:1px solid var(--line); border-radius:8px; padding:8px 10px; color:var(--text); }
+
+  @media (max-width:760px){
+    nav.links{ position:fixed; inset:64px 0 auto 0; background:var(--bg); flex-direction:column; align-items:flex-start;
+      padding:18px 24px 24px; border-bottom:1px solid var(--line); gap:16px; transform:translateY(-8px); opacity:0; pointer-events:none; transition:.2s; }
+    nav.links.open{ transform:translateY(0); opacity:1; pointer-events:auto; }
+    .menu-btn{ display:inline-flex; }
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{ padding:64px 0 40px; }
+  .hero-inner{ display:grid; grid-template-columns: 1fr 1fr; gap:40px; align-items:center; }
+  .hero-mark{ display:flex; justify-content:center; }
+  .hero-mark svg{ width:100%; max-width:340px; animation: rise .9s ease both; }
+  .hero-mark img{ width:100%; max-width:320px; border-radius:16px; animation: rise .9s ease both; box-shadow:0 8px 30px rgba(94,14,23,.18); }
+  @keyframes rise{ from{ opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
+  .eyebrow-tag{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:13px; color:var(--mark); border:1px solid var(--line); padding:6px 14px 6px 10px; border-radius:999px; margin-bottom:18px;
+  }
+  h1.title{ font-size:52px; margin:0 0 6px; color:var(--mark); font-weight:500; line-height:1.05; }
+  .sub-role{ font-size:14px; letter-spacing:.14em; color:var(--muted); margin:0 0 22px; }
+  .hero p.lead{ font-size:19px; margin:0 0 10px; max-width:46ch; }
+  .hero p.lead2{ font-size:15.5px; color:var(--muted); margin:0 0 28px; max-width:48ch; }
+  .ticket-cta{
+    display:inline-flex; align-items:center; gap:10px;
+    background:var(--mark); color:var(--bg); text-decoration:none;
+    padding:13px 22px; border-radius:6px; font-size:15px; position:relative;
+  }
+  :root[data-theme="dark"] .ticket-cta, @media (prefers-color-scheme:dark){ }
+  .ticket-cta:before, .ticket-cta:after{
+    content:""; position:absolute; width:12px; height:12px; background:var(--bg); border-radius:50%; top:50%; transform:translateY(-50%);
+  }
+  .ticket-cta:before{ left:-6px; } .ticket-cta:after{ right:-6px; }
+
+  /* ---------- SECTION HEADS ---------- */
+  section{ padding:56px 0; border-top:1px solid var(--line); }
+  .kicker{ font-size:13px; color:var(--mark); margin:0 0 8px; }
+  h2.h2{ font-family:'Bodoni Moda',serif; font-weight:500; font-size:32px; margin:0 0 30px; color:var(--mark); }
+
+  /* ---------- PROFILE ---------- */
+  .profile{ display:grid; grid-template-columns:120px 1fr; gap:26px; align-items:flex-start; }
+  .avatar{
+    width:104px; height:104px; border-radius:50%; border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; background:var(--card);
+  }
+  .avatar svg{ width:56px; height:56px; }
+  .profile-name{ font-family:'Bodoni Moda',serif; font-size:26px; color:var(--mark); margin:0 0 2px; }
+  .profile-handle{ font-size:14px; color:var(--muted); margin:0 0 16px; }
+  .speech{
+    background:var(--card); border:1px solid var(--line); border-radius:4px 16px 16px 16px;
+    padding:18px 20px; font-size:16px; max-width:56ch; position:relative;
+  }
+  .tagchips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; }
+  .tagchips span{ font-size:13px; padding:6px 12px; border:1px solid var(--line); border-radius:999px; color:var(--mark); }
+
+  /* ---------- NOTICE TICKET ---------- */
+  .notice{
+    display:flex; align-items:center; gap:14px; background:var(--card);
+    border:1px dashed var(--line); border-radius:10px; padding:16px 20px; font-size:14.5px;
+  }
+  .notice b{ color:var(--mark); }
+
+  /* ---------- SEVEN LEAVES ---------- */
+  .leaf-list{ display:flex; flex-direction:column; }
+  .leaf-row{
+    display:grid; grid-template-columns:64px 1fr; gap:18px; padding:20px 0; border-top:1px solid var(--line);
+  }
+  .leaf-row:first-child{ border-top:none; }
+  .leaf-num{ font-family:'Bodoni Moda',serif; font-size:15px; color:var(--muted); display:flex; align-items:flex-start; gap:8px; padding-top:2px; }
+  .leaf-num svg{ width:20px; height:20px; flex:none; margin-top:2px; }
+  .leaf-body h3{ margin:0 0 4px; font-size:18px; color:var(--mark); font-weight:400; }
+  .leaf-body h3 em{ font-style:normal; color:var(--muted); font-size:14px; margin-right:8px; }
+  .leaf-body p{ margin:0; font-size:15px; color:var(--text); opacity:.88; max-width:60ch; }
+  .leaf-clickable{ cursor:pointer; transition:background .18s; border-radius:8px; }
+  .leaf-clickable:hover{ background:color-mix(in srgb, var(--mark) 6%, transparent); }
+  .leaf-badge{ display:inline-block; font-size:12px; color:var(--bg); background:var(--mark); border-radius:999px; padding:2px 10px; margin-left:6px; vertical-align:middle; }
+
+  /* ---------- INTAKE MODAL ---------- */
+  .modal-overlay{ position:fixed; inset:0; background:rgba(40,8,14,.55); backdrop-filter:blur(3px);
+    display:none; align-items:flex-start; justify-content:center; z-index:100; padding:24px 16px; overflow-y:auto; }
+  .modal-overlay.open{ display:flex; }
+  .modal{ background:var(--bg); border-radius:16px; max-width:760px; width:100%; margin:auto;
+    box-shadow:0 20px 60px rgba(40,8,14,.4); overflow:hidden; animation:rise .35s ease both; }
+  .modal-head{ background:var(--mark); color:var(--bg); padding:26px 28px; position:relative; }
+  .modal-head h3{ font-family:'Bodoni Moda',serif; margin:0 0 6px; font-size:24px; }
+  .modal-head p{ margin:0; font-size:13.5px; opacity:.9; }
+  .modal-close{ position:absolute; top:16px; right:18px; background:none; border:none; color:var(--bg);
+    font-size:26px; cursor:pointer; line-height:1; }
+  .modal-body{ padding:24px 28px 30px; }
+  .intake-sec{ border:1px solid var(--line); border-radius:12px; padding:20px 22px; margin-bottom:18px; }
+  .intake-sec h4{ margin:0 0 14px; font-size:16px; color:var(--mark); border-bottom:1px solid var(--line); padding-bottom:10px; }
+  .intake-q{ font-size:14.5px; color:var(--text); margin:14px 0 6px; font-weight:700; }
+  .intake-q:first-child{ margin-top:0; }
+  .intake-opts{ display:flex; flex-wrap:wrap; gap:8px 18px; }
+  .intake-opts label{ font-size:14px; color:var(--text); display:inline-flex; align-items:center; gap:6px; cursor:pointer; }
+  .intake-line{ border:none; border-bottom:1px solid var(--line); background:transparent; color:var(--text);
+    font-size:14px; padding:4px 2px; min-width:120px; }
+  .intake-sub{ margin-left:22px; }
+  .intake-note{ font-size:13px; color:var(--muted); font-style:italic; margin:0 0 12px; }
+  .modal-cta{ display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
+  .modal-cta a{ text-decoration:none; padding:12px 22px; border-radius:6px; font-size:14.5px; }
+  .modal-cta .kko{ background:var(--mark); color:var(--bg); }
+  .modal-cta .sec{ border:1px solid var(--line); color:var(--mark); }
+  @media (max-width:600px){ .modal-body{ padding:18px; } .intake-sec{ padding:16px; } }
+
+  /* ---------- RECEIPT PRICING ---------- */
+  .receipt{
+    background:var(--card); border:1px solid var(--line); border-radius:4px; padding:30px 28px;
+    max-width:420px; font-family:'Gowun Dodum',sans-serif; position:relative;
+  }
+  .receipt:before{
+    content:""; position:absolute; left:0; right:0; bottom:-9px; height:18px;
+    background:
+      radial-gradient(circle at 9px 0, transparent 9px, var(--bg) 9.5px) repeat-x;
+    background-size:18px 18px;
+  }
+  .receipt h3{ text-align:center; font-family:'Bodoni Moda',serif; font-weight:500; font-size:20px; margin:0 0 4px; color:var(--mark); }
+  .receipt .sub{ text-align:center; font-size:12.5px; color:var(--muted); margin-bottom:18px; }
+  .r-line{ display:flex; justify-content:space-between; font-size:14.5px; padding:9px 0; border-bottom:1px dashed var(--line); }
+  .r-line span:last-child{ color:var(--mark); }
+  .r-total{ display:flex; justify-content:space-between; font-size:16px; padding:14px 0 0; font-weight:700; color:var(--mark); }
+  .r-note{ font-size:12px; color:var(--muted); margin-top:16px; text-align:center; }
+
+  .pricing-row{ display:flex; gap:24px; align-items:flex-start; flex-wrap:wrap; }
+  .pricing-row .receipt{ flex:0 1 340px; }
+  .plan-col{ flex:1 1 420px; min-width:300px; display:flex; flex-direction:column; gap:12px; }
+  .plan-acc{ background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+  .plan-acc > summary{ font-family:'Bodoni Moda',serif; font-weight:600; font-size:16px; color:var(--mark);
+    padding:16px 20px; cursor:pointer; list-style:none; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .plan-acc > summary::-webkit-details-marker{ display:none; }
+  .plan-acc > summary::after{ content:"+"; font-size:20px; color:var(--mark); flex:none; }
+  .plan-acc[open] > summary::after{ content:"−"; }
+  .plan-acc[open] > summary{ border-bottom:1px solid var(--line); }
+  .plan-acc:hover{ border-color:var(--mark); }
+  .plan-acc-body{ padding:18px 20px 22px; }
+  .plan-card{ flex:1 1 360px; background:var(--card); border:1px solid var(--line); border-radius:4px; padding:26px 24px; }
+  .plan-title{ font-family:'Bodoni Moda',serif; font-weight:600; font-size:18px; color:var(--mark); margin:0 0 4px; }
+  .plan-desc{ font-size:13px; color:var(--muted); margin:0 0 18px; }
+  .plan-opt{ display:block; border:1px solid var(--line); border-radius:10px; padding:16px 18px; margin-bottom:14px; cursor:pointer; transition:border-color .18s, background .18s; }
+  .plan-opt:hover{ border-color:var(--mark); }
+  .plan-opt:has(input:checked){ border-color:var(--mark); background:color-mix(in srgb, var(--mark) 6%, transparent); }
+  .plan-opt input{ margin-right:8px; }
+  .plan-opt-body{ display:inline-block; width:calc(100% - 26px); vertical-align:top; }
+  .plan-opt-head{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
+  .plan-opt-head strong{ font-size:16px; color:var(--mark); }
+  .plan-price{ font-family:'Bodoni Moda',serif; font-weight:600; font-size:17px; color:var(--mark); }
+  .plan-amt{ font-size:12.5px; color:var(--muted); margin:2px 0 10px; }
+  .plan-feats{ margin:0; padding-left:18px; }
+  .plan-feats li{ font-size:13px; color:var(--text); opacity:.9; margin-bottom:5px; line-height:1.5; }
+  .plan-group{ margin-top:12px; }
+  .plan-group-title{ font-size:13.5px; font-weight:700; color:var(--mark); margin:0 0 6px; }
+  .plan-cta{ display:inline-block; margin-top:6px; background:var(--mark); color:var(--bg); text-decoration:none; padding:12px 22px; border-radius:6px; font-size:14.5px; }
+
+  /* ---------- SIDE WIDGETS ---------- */
+  .widgets{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .widget{ background:var(--card); border:1px solid var(--line); border-radius:10px; padding:20px; text-align:center; }
+  .widget .stamp{ width:56px; height:56px; margin:0 auto 10px; border:2px solid var(--mark); border-radius:50%; display:flex; align-items:center; justify-content:center; transform:rotate(-8deg); }
+  .widget .stamp span{ font-size:11px; font-family:'Bodoni Moda',serif; color:var(--mark); letter-spacing:.08em; }
+  .widget h4{ margin:0 0 6px; font-size:14.5px; color:var(--mark); font-weight:700; }
+  .widget p{ margin:0; font-size:13px; color:var(--muted); }
+  .widget a{ text-decoration:none; }
+
+  /* ---------- CONTACT / FOOTER ---------- */
+  .contact-box{ display:flex; flex-wrap:wrap; gap:14px 30px; align-items:center; }
+  .contact-box a.btn{
+    background:var(--mark); color:var(--bg); text-decoration:none; padding:12px 20px; border-radius:6px; font-size:14.5px;
+  }
+  .contact-box .info{ font-size:14.5px; color:var(--muted); }
+  .qr-row{ display:flex; gap:28px; margin-top:26px; }
+  .qr-item{ text-align:center; }
+  .qr-item img{ width:96px; height:96px; border:1px solid var(--line); border-radius:8px; background:var(--card); padding:6px; }
+  .qr-item p{ margin:8px 0 0; font-size:13px; color:var(--mark); }
+  .qr-item p span{ color:var(--muted); font-size:12px; }
+  .qr-item a{ color:inherit; text-decoration:none; }
+  .qr-item p a{ color:var(--mark); border-bottom:1px solid var(--line); }
+  .widget-qr{ display:flex; justify-content:center; gap:20px; margin-top:16px; }
+  .widget-qr a{ text-decoration:none; color:var(--mark); }
+  .widget-qr img{ width:104px; height:104px; border:1px solid var(--line); border-radius:10px; background:var(--card); padding:6px; display:block; }
+  .widget-qr span{ display:block; margin-top:8px; font-size:12.5px; line-height:1.5; }
+  .widget-qr span em{ font-style:normal; color:var(--muted); font-size:11.5px; }
+
+  footer{ padding:40px 0 calc(40px + env(safe-area-inset-bottom,0px)); text-align:center; }
+  footer svg{ width:30px; height:30px; margin-bottom:10px; }
+  footer .fm{ font-family:'Bodoni Moda',serif; font-style:italic; font-size:16px; color:var(--mark); margin:0 0 4px; }
+  footer .fc{ font-size:12px; color:var(--muted); margin:0; }
+
+  @media (max-width:760px){
+    .hero-inner{ grid-template-columns:1fr; }
+    .hero-mark{ order:-1; }
+    h1.title{ font-size:38px; }
+    .profile{ grid-template-columns:1fr; }
+    .widgets{ grid-template-columns:1fr; }
+    .wrap{ padding:0 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav">
+  <div class="nav-row">
+    <a class="brand" href="#home">
+      <svg viewBox="0 0 100 100"><g fill="none" stroke="var(--mark)" stroke-width="4">
+        <g transform="translate(50,55)">
+          <g transform="rotate(0)"><path d="M0,0 C-9,-4 -11,-16 -4,-23 Q0,-20 4,-23 C11,-16 9,-4 0,0Z"/></g>
+          <g transform="rotate(51.4)"><path d="M0,0 C-9,-4 -11,-16 -4,-23 Q0,-20 4,-23 C11,-16 9,-4 0,0Z"/></g>
+          <g transform="rotate(102.8)"><path d="M0,0 C-9,-4 -11,-16 -4,-23 Q0,-20 4,-23 C11,-16 9,-4 0,0Z"/></g>
+          <g transform="rotate(154.3)"><path d="M0,0 C-9,-4 -11,-16 -4,-23 Q0,-20 4,-23 C11,-16 9,-4 0,0Z"/></g>
+          <g transform="rotate(205.7)"><path d="M0,0 C-9,-4 -11,-16 -4,-23 Q0,-20 4,-23 C11,-16 9,-4 0,0Z"/></g>
+          <g transform="rotate(257.1)"><path d="M0,0 C-9,-4 -11,-16 -4,-23 Q0,-20 4,-23 C11,-16 9,-4 0,0Z"/></g>
+          <g transform="rotate(308.6)"><path d="M0,0 C-9,-4 -11,-16 -4,-23 Q0,-20 4,-23 C11,-16 9,-4 0,0Z"/></g>
+        </g>
+      </g></svg>
+      <span class="brand-name">Merry Only</span>
+    </a>
+    <button class="menu-btn" id="menuBtn" aria-label="메뉴 열기">☰</button>
+    <nav class="links" id="navLinks">
+      <a href="#about">소개</a>
+      <a href="#solutions">일곱 잎 솔루션</a>
+      <a href="#pricing">상담 안내</a>
+      <a href="#contact">문의</a>
+      <span class="status-badge"><span class="status-dot"></span> 상담 가능</span>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="home" style="border-top:none;">
+  <div class="wrap hero-inner">
+    <div>
+      <span class="eyebrow-tag">🎫 ADMIT ONE · 라이프 리빌딩 상담</span>
+      <h1 class="title disp">Merry Only</h1>
+      <p class="sub-role">로드 디렉터 · 복지 · 주거 컨설팅</p>
+      <p class="lead">막막한 서류와 절차, 저와 함께 걸어요.</p>
+      <p class="lead2">병원비·보험금 환급부터 기초생활수급, LH 아파트, 취업까지 —
+      일곱 걸음으로 다시 서는 삶을 설계합니다.</p>
+      <a class="ticket-cta" href="https://open.kakao.com/me/merryonly_rd7" target="_blank" rel="noopener">상담 예약하기</a>
+    </div>
+    <div class="hero-mark">
+      <svg viewBox="0 0 440 430" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(220,235)">
+          <path d="M0,45 C-3,80 6,110 -4,142" fill="none" stroke="#E7C567" stroke-width="5" stroke-linecap="round"/>
+          <path d="M-4,90 C-24,84 -36,96 -37,112 C-22,110 -8,105 -1,93 Z" fill="#E7C567"/>
+          <path d="M1,116 C22,112 34,126 34,143 C19,140 6,134 0,121 Z" fill="#E7C567"/>
+          <path d="M-6,138 C-22,143 -28,158 -24,170 C-12,163 -4,152 -4,140 Z" fill="#E7C567"/>
+        </g>
+        <g transform="translate(220,235)">
+          <g transform="rotate(0.0)"><path d="M0,0 C-12,-12 -15,-36 -5,-66 C-2,-74 4,-74 7,-66 C17,-36 12,-12 0,0Z" fill="#E7C567"/></g>
+          <g transform="rotate(51.429)"><path d="M0,0 C-12,-12 -15,-36 -5,-66 C-2,-74 4,-74 7,-66 C17,-36 12,-12 0,0Z" fill="#E7C567"/></g>
+          <g transform="rotate(102.857)"><path d="M0,0 C-12,-12 -15,-36 -5,-66 C-2,-74 4,-74 7,-66 C17,-36 12,-12 0,0Z" fill="#E7C567"/></g>
+          <g transform="rotate(154.286)"><path d="M0,0 C-12,-12 -15,-36 -5,-66 C-2,-74 4,-74 7,-66 C17,-36 12,-12 0,0Z" fill="#E7C567"/></g>
+          <g transform="rotate(205.714)"><path d="M0,0 C-12,-12 -15,-36 -5,-66 C-2,-74 4,-74 7,-66 C17,-36 12,-12 0,0Z" fill="#E7C567"/></g>
+          <g transform="rotate(257.143)"><path d="M0,0 C-12,-12 -15,-36 -5,-66 C-2,-74 4,-74 7,-66 C17,-36 12,-12 0,0Z" fill="#E7C567"/></g>
+          <g transform="rotate(308.571)"><path d="M0,0 C-12,-12 -15,-36 -5,-66 C-2,-74 4,-74 7,-66 C17,-36 12,-12 0,0Z" fill="#E7C567"/></g>
+          <circle r="5" fill="#F6EFDC"/>
+        </g>
+        <g transform="translate(220,195)">
+          <path d="M0,8 C-11,-30 -46,-44 -60,-24 C-70,-7 -52,16 -23,17 C-14,18 -5,14 0,8Z" fill="#F6EFDC" stroke="#E7C567" stroke-width="2.6"/>
+          <path d="M0,8 C11,-30 46,-44 60,-24 C70,-7 52,16 23,17 C14,18 5,14 0,8Z" fill="#F6EFDC" stroke="#E7C567" stroke-width="2.6"/>
+          <ellipse cx="0" cy="3" rx="3.4" ry="16" fill="#E7C567"/>
+        </g>
+        <g transform="translate(84,262) scale(0.72)">
+          <path d="M-18,30 C-40,40 -49,20 -42,8" fill="none" stroke="#E7C567" stroke-width="3" stroke-linecap="round"/>
+          <ellipse cx="0" cy="12" rx="22" ry="27" fill="#F6EFDC" stroke="#E7C567" stroke-width="3"/>
+          <circle cx="4" cy="-34" r="7" fill="#F6EFDC" stroke="#E7C567" stroke-width="2.6"/>
+          <circle cx="20" cy="-32" r="6.5" fill="#F6EFDC" stroke="#E7C567" stroke-width="2.6"/>
+          <circle cx="13" cy="-20" r="15" fill="#F6EFDC" stroke="#E7C567" stroke-width="3"/>
+          <circle cx="18" cy="-23" r="1.6" fill="#B8860B"/>
+        </g>
+        <g transform="translate(356,262) scale(-0.72,0.72)">
+          <path d="M-18,30 C-40,40 -49,20 -42,8" fill="none" stroke="#E7C567" stroke-width="3" stroke-linecap="round"/>
+          <ellipse cx="0" cy="12" rx="22" ry="27" fill="#F6EFDC" stroke="#E7C567" stroke-width="3"/>
+          <circle cx="4" cy="-34" r="7" fill="#F6EFDC" stroke="#E7C567" stroke-width="2.6"/>
+          <circle cx="20" cy="-32" r="6.5" fill="#F6EFDC" stroke="#E7C567" stroke-width="2.6"/>
+          <circle cx="13" cy="-20" r="15" fill="#F6EFDC" stroke="#E7C567" stroke-width="3"/>
+          <circle cx="18" cy="-23" r="1.6" fill="#B8860B"/>
+        </g>
+      </svg>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROFILE ============ -->
+<section id="about">
+  <div class="wrap">
+    <p class="kicker">소개</p>
+    <div class="profile">
+      <div class="avatar">
+        <svg viewBox="0 0 100 100"><g transform="translate(50,55)" fill="var(--mark)">
+          <g transform="rotate(0)"><path d="M0,0 C-9,-4 -11,-16 -4,-23 Q0,-20 4,-23 C11,-16 9,-4 0,0Z"/></g>
+          <g transform="rotate(51.4)"><path d="M0,0 C-9,-4 -11,-16 -4,-23 Q0,-20 4,-23 C11,-16 9,-4 0,0Z"/></g>
+          <g transform="rotate(102.8)"><path d="M0,0 C-9,-4 -11,-16 -4,-23 Q0,-20 4,-23 C11,-16 9,-4 0,0Z"/></g>
+          <g transform="rotate(154.3)"><path d="M0,0 C-9,-4 -11,-16 -4,-23 Q0,-20 4,-23 C11,-16 9,-4 0,0Z"/></g>
+          <g transform="rotate(205.7)"><path d="M0,0 C-9,-4 -11,-16 -4,-23 Q0,-20 4,-23 C11,-16 9,-4 0,0Z"/></g>
+          <g transform="rotate(257.1)"><path d="M0,0 C-9,-4 -11,-16 -4,-23 Q0,-20 4,-23 C11,-16 9,-4 0,0Z"/></g>
+          <g transform="rotate(308.6)"><path d="M0,0 C-9,-4 -11,-16 -4,-23 Q0,-20 4,-23 C11,-16 9,-4 0,0Z"/></g>
+        </g></svg>
+      </div>
+      <div>
+        <h3 class="profile-name disp">메리온니로드 디렉터</h3>
+        <p class="profile-handle">@merryonly_rd7</p>
+        <div class="speech">
+          안녕하세요, 메리온니로드 디렉터입니다. 서류 앞에서 막막했던 마음, 제가 제일 잘 알아요.
+          혼자 헤매지 마시고 편하게 물어봐 주세요 — 첫 걸음부터 끝까지 같이 걸을게요.
+        </div>
+        <div class="tagchips">
+          <span>#병원연계</span><span>#병원비환급</span><span>#보험금환급</span><span>#민형사컨설팅</span><span>#기초생활수급</span>
+          <span>#LH아파트</span><span>#숨은복지발굴</span><span>#취업지원</span><span>#직업상담</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NOTICE ============ -->
+<section style="padding-top:0; padding-bottom:0; border-top:none;">
+  <div class="wrap">
+    <div class="notice">📌 <span><b>10월 상담 예약 3자리</b> 남았습니다 · 카카오톡으로 편하게 문의 주세요</span></div>
+  </div>
+</section>
+
+<!-- ============ SEVEN LEAVES ============ -->
+<section id="solutions">
+  <div class="wrap">
+    <p class="kicker">일곱 잎의 행운, 함께 걷는 길</p>
+    <h2 class="h2 disp">일곱 잎 솔루션</h2>
+    <div class="leaf-list">
+      <div class="leaf-row leaf-clickable" onclick="openIntake(1)" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openIntake(1);}">
+        <div class="leaf-num">01</div>
+        <div class="leaf-body"><h3><em>위기 극복</em>의료기관 연계 및 병원비 환급 <span class="leaf-badge">문진표 보기 ↗</span></h3>
+        <p>의료기관과 연계해, 과도하게 낸 병원비와 놓친 환급금을 꼼꼼히 되찾아드려요.</p></div>
+      </div>
+      <div class="leaf-row leaf-clickable" onclick="openIntake(2)" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openIntake(2);}">
+        <div class="leaf-num">02</div>
+        <div class="leaf-body"><h3><em>보험금 환급</em>민·형사 컨설팅 <span class="leaf-badge">문진표 보기 ↗</span></h3>
+        <p>정당하게 받아야 할 보험금과 사고 관련 절차를 함께 정리해요.</p></div>
+      </div>
+      <div class="leaf-row leaf-clickable" onclick="openIntake(3)" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openIntake(3);}">
+        <div class="leaf-num">03</div>
+        <div class="leaf-body"><h3><em>기반 마련</em>기초생활수급 <span class="leaf-badge">문진표 보기 ↗</span></h3>
+        <p>수급 자격 판정부터 변경까지, 놓치기 쉬운 서류를 챙겨드려요.</p></div>
+      </div>
+      <div class="leaf-row leaf-clickable" onclick="openIntake(4)" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openIntake(4);}">
+        <div class="leaf-num">04</div>
+        <div class="leaf-body"><h3><em>안정</em>LH 아파트 및 주거복지 연계 <span class="leaf-badge">문진표 보기 ↗</span></h3>
+        <p>든든한 보금자리, LH 임대주택 신청부터 다양한 주거복지 연계까지 처음부터 챙겨드려요.</p></div>
+      </div>
+      <div class="leaf-row leaf-clickable" onclick="openIntake(5)" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openIntake(5);}">
+        <div class="leaf-num">05</div>
+        <div class="leaf-body"><h3><em>숨은 혜택</em>숨은 복지 발굴 <span class="leaf-badge">문진표 보기 ↗</span></h3>
+        <p>모르고 지나쳤던 지원 제도를 하나하나 찾아 연결해 드려요.</p></div>
+      </div>
+      <div class="leaf-row leaf-clickable" onclick="openIntake(6)" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openIntake(6);}">
+        <div class="leaf-num">06</div>
+        <div class="leaf-body"><h3><em>도약</em>취업 지원 <span class="leaf-badge">문진표 보기 ↗</span></h3>
+        <p>다시 설 수 있는 힘, 취업까지 실질적으로 도와드려요.</p></div>
+      </div>
+      <div class="leaf-row leaf-clickable" onclick="openIntake(7)" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openIntake(7);}">
+        <div class="leaf-num">07</div>
+        <div class="leaf-body"><h3><em>자아 탐색</em>직업상담 <span class="leaf-badge">문진표 보기 ↗</span></h3>
+        <p>진짜 나를 알아가는 시간, 방향을 함께 고민해요.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING (receipt) ============ -->
+<section id="pricing">
+  <div class="wrap">
+    <p class="kicker">상담 안내</p>
+    <h2 class="h2 disp">이용 방법</h2>
+    <div class="pricing-row">
+    <div class="receipt">
+      <h3>MERRY ONNI</h3>
+      <p class="sub">CONSULTING RECEIPT</p>
+      <div class="r-line"><span>첫 상담 (30분)</span><span>무료</span></div>
+      <div class="r-line"><span>서류 검토</span><span>50,000원</span></div>
+      <div class="r-line"><span>신청 대행</span><span>70,000원</span></div>
+      <div class="r-line"><span>전체 케어 패키지 (7단계 동행)</span><span>문의</span></div>
+      <div class="r-total"><span>최종 비용</span><span>상담 후 안내</span></div>
+      <p class="r-note">* 최종 비용은 상담 후 상황에 맞춰 안내드립니다.</p>
+    </div>
+
+    <div class="plan-col">
+    <details class="plan-acc" open>
+      <summary>01. 위기 극복 · 의료기관 연계 및 병원비 환급</summary>
+      <div class="plan-acc-body">
+      <p class="plan-desc">아래에서 상황에 맞는 유형을 선택하실 수 있어요.</p>
+
+      <label class="plan-opt">
+        <input type="radio" name="plan01">
+        <div class="plan-opt-body">
+          <div class="plan-opt-head"><strong>기본형</strong><span class="plan-price">₩4,500,000</span></div>
+          <p class="plan-amt">일금 사백오십만 원</p>
+          <ul class="plan-feats">
+            <li>신청 방법 및 진행 절차 설계·안내</li>
+            <li>병원 등 발급 서류의 정리 및 검토</li>
+            <li>사용한 의료비의 약 50~70% 수준 지원을 목표로 신청 절차를 설계·조력</li>
+            <li>지원 대상 구간: 총 의료비 1,000만 원 이하</li>
+          </ul>
+        </div>
+      </label>
+
+      <label class="plan-opt">
+        <input type="radio" name="plan01">
+        <div class="plan-opt-body">
+          <div class="plan-opt-head"><strong>고급형</strong><span class="plan-price">₩8,500,000</span></div>
+          <p class="plan-amt">일금 팔백오십만 원</p>
+          <ul class="plan-feats">
+            <li>신청 방법 및 진행 절차 설계·안내</li>
+            <li>병원 등 발급 서류의 정리 및 검토</li>
+            <li>사용한 의료비의 약 70~80% 수준 지원을 목표로 신청 절차를 설계·조력</li>
+            <li>지원 대상 구간: 총 의료비 5,000만 원 이하</li>
+            <li>전(全) 업무 과정에 대한 동행 지원</li>
+            <li>그 밖에 필요한 복지 관련 서비스 2종 안내·연계</li>
+            <li>후유장애에 해당하는 경우 관련 절차 지원</li>
+            <li>필요시 병원 연계</li>
+          </ul>
+        </div>
+      </label>
+
+      <a class="plan-cta" href="https://open.kakao.com/me/merryonly_rd7" target="_blank" rel="noopener">이 유형으로 상담 문의하기</a>
+      </div>
+    </details>
+
+    <details class="plan-acc">
+      <summary>02. 보험금 환급 · 민·형사 컨설팅</summary>
+      <div class="plan-acc-body">
+      <p class="plan-desc">아래에서 상황에 맞는 유형을 선택하실 수 있어요.</p>
+
+      <label class="plan-opt">
+        <input type="radio" name="plan02">
+        <div class="plan-opt-body">
+          <div class="plan-opt-head"><strong>기본형</strong><span class="plan-price">보상 보험금의 20%</span></div>
+          <ul class="plan-feats">
+            <li>신청 방법 및 진행 절차 설계·안내</li>
+            <li>병원 등 발급 서류의 정리 및 검토</li>
+            <li>지원 대상 구간: 총 의료비 500만 원 이하</li>
+          </ul>
+        </div>
+      </label>
+
+      <label class="plan-opt">
+        <input type="radio" name="plan02">
+        <div class="plan-opt-body">
+          <div class="plan-opt-head"><strong>중간형</strong><span class="plan-price">₩5,500,000</span></div>
+          <p class="plan-amt">일금 오백오십만 원</p>
+          <ul class="plan-feats">
+            <li>신청 방법 및 진행 절차 설계·안내</li>
+            <li>병원 등 발급 서류의 정리 및 검토</li>
+            <li>지원 대상 구간: 총 의료비 3,000만 원 이하</li>
+            <li>필요시 민·형사 변호사 연계</li>
+            <li>필요시 병원 연계</li>
+          </ul>
+        </div>
+      </label>
+
+      <label class="plan-opt">
+        <input type="radio" name="plan02">
+        <div class="plan-opt-body">
+          <div class="plan-opt-head"><strong>고급형</strong><span class="plan-price">₩8,500,000</span></div>
+          <p class="plan-amt">일금 팔백오십만 원</p>
+          <ul class="plan-feats">
+            <li>신청 방법 및 진행 절차 설계·안내</li>
+            <li>병원 등 발급 서류의 정리 및 검토</li>
+            <li>지원 대상 구간: 총 의료비 7,000만 원 이하</li>
+            <li>필요시 민·형사 변호사 연계</li>
+            <li>전(全) 업무 과정에 대한 동행 지원</li>
+            <li>그 밖에 필요한 복지 관련 서비스 2종 안내·연계</li>
+            <li>후유장애에 해당하는 경우 관련 절차 지원</li>
+            <li>필요시 병원 연계</li>
+          </ul>
+        </div>
+      </label>
+
+      <a class="plan-cta" href="https://open.kakao.com/me/merryonly_rd7" target="_blank" rel="noopener">이 유형으로 상담 문의하기</a>
+      </div>
+    </details>
+
+    <details class="plan-acc">
+      <summary>03. 기반 마련 · 기초생활수급</summary>
+      <div class="plan-acc-body">
+      <p class="plan-desc">아래에서 상황에 맞는 유형을 선택하실 수 있어요.</p>
+
+      <label class="plan-opt">
+        <input type="radio" name="plan03">
+        <div class="plan-opt-body">
+          <div class="plan-opt-head"><strong>기본형</strong><span class="plan-price">₩3,000,000</span></div>
+          <p class="plan-amt">일금 삼백만 원</p>
+          <ul class="plan-feats">
+            <li>요건 분석 및 자격 선정 상담</li>
+            <li>신청 방법 및 진행 절차 설계·안내</li>
+            <li>근로능력평가용 입증 서류 준비·작성 지원</li>
+            <li>관할 주민센터 신청 접수 및 진행 관리 코칭 안내</li>
+            <li>정당한 사유가 있는 경우 1차·2차 이의신청 등 적법한 불복 절차 안내·지원</li>
+          </ul>
+        </div>
+      </label>
+
+      <label class="plan-opt">
+        <input type="radio" name="plan03">
+        <div class="plan-opt-body">
+          <div class="plan-opt-head"><strong>고급형</strong><span class="plan-price">₩8,500,000</span></div>
+          <p class="plan-amt">일금 팔백오십만 원</p>
+          <ul class="plan-feats">
+            <li>요건 분석 및 자격 선정·변경 상담</li>
+            <li>신청 방법 및 진행 절차 설계·안내</li>
+            <li>병원 등 발급 서류의 정리 및 검토</li>
+            <li>근로능력평가용 입증 서류 준비·작성 지원</li>
+            <li>관할 주민센터 신청 접수 및 진행 관리 코칭 안내</li>
+            <li>정당한 사유가 있는 경우 1차·2차 이의신청 등 적법한 불복 절차 안내·지원</li>
+            <li>전(全) 업무 과정에 대한 동행 지원</li>
+            <li>그 밖에 필요한 복지 관련 서비스 2종 안내·연계</li>
+            <li>필요시 민·형사 변호사 연계</li>
+          </ul>
+        </div>
+      </label>
+
+      <a class="plan-cta" href="https://open.kakao.com/me/merryonly_rd7" target="_blank" rel="noopener">이 유형으로 상담 문의하기</a>
+      </div>
+    </details>
+
+    <details class="plan-acc">
+      <summary>04. LH 아파트 및 주거복지 연계</summary>
+      <div class="plan-acc-body">
+      <p class="plan-desc">아래에서 상황에 맞는 유형을 선택하실 수 있어요.</p>
+
+      <label class="plan-opt">
+        <input type="radio" name="plan04">
+        <div class="plan-opt-body">
+          <div class="plan-opt-head"><strong>기본형</strong><span class="plan-price">₩4,500,000</span></div>
+          <p class="plan-amt">일금 사백오십만 원</p>
+          <ul class="plan-feats">
+            <li>신청 서류 정리</li>
+            <li>신청 방법 및 진행 절차 설계·안내</li>
+            <li>관련 주거지 공고 정리 및 안내</li>
+            <li>대출 신청 방법 및 서류 안내</li>
+            <li>신청을 통해 선정 또는 예비 1~5번까지 선정될 수 있도록 지원</li>
+          </ul>
+        </div>
+      </label>
+
+      <label class="plan-opt">
+        <input type="radio" name="plan04">
+        <div class="plan-opt-body">
+          <div class="plan-opt-head"><strong>고급형</strong><span class="plan-price">₩8,500,000</span></div>
+          <p class="plan-amt">일금 팔백오십만 원</p>
+          <ul class="plan-feats">
+            <li>신청 서류 정리</li>
+            <li>신청 방법 및 진행 방법 설계</li>
+            <li>신청을 통해 선정될 수 있도록 지원</li>
+            <li>대출 신청 방법 및 서류 안내</li>
+            <li>모든 업무 수행 시 "갑"과의 동행 지원</li>
+            <li>그 밖에 필요한 복지에 대하여 2개 서비스 제공</li>
+          </ul>
+        </div>
+      </label>
+
+      <label class="plan-opt">
+        <input type="radio" name="plan04">
+        <div class="plan-opt-body">
+          <div class="plan-opt-head"><strong>주거 복지 연계</strong><span class="plan-price">₩1,000,000</span></div>
+          <p class="plan-amt">일금 백만 원</p>
+          <ul class="plan-feats">
+            <li>신청 서류 정리</li>
+            <li>신청 방법 및 진행 방법 설계</li>
+            <li>신청을 통해 선정될 수 있도록 지원</li>
+          </ul>
+        </div>
+      </label>
+
+      <a class="plan-cta" href="https://open.kakao.com/me/merryonly_rd7" target="_blank" rel="noopener">이 유형으로 상담 문의하기</a>
+      </div>
+    </details>
+    <details class="plan-acc">
+      <summary>05. 숨은 복지 발굴 연계</summary>
+      <div class="plan-acc-body">
+      <p class="plan-desc">아래에서 상황에 맞는 유형을 선택하실 수 있어요.</p>
+
+      <label class="plan-opt">
+        <input type="radio" name="plan05">
+        <div class="plan-opt-body">
+          <div class="plan-opt-head"><strong>기본형</strong><span class="plan-price">상담 후 안내</span></div>
+          <ul class="plan-feats">
+            <li>상담 후 금액 제시 가능</li>
+            <li>신청 서류 정리</li>
+            <li>신청 방법 및 진행 방법 설계</li>
+            <li>정부 및 지자체 기본 복지 제도 안내</li>
+            <li>기초생활수급/차상위 등 자격 요건 상담</li>
+            <li>주민센터 방문 및 신청 방법 기본 가이드</li>
+          </ul>
+        </div>
+      </label>
+
+      <label class="plan-opt">
+        <input type="radio" name="plan05">
+        <div class="plan-opt-body">
+          <div class="plan-opt-head"><strong>고급형</strong><span class="plan-price">₩3,000,000</span></div>
+          <p class="plan-amt">일금 삼백만 원</p>
+          <ul class="plan-feats">
+            <li>신청 서류 정리</li>
+            <li>신청 방법 및 진행 방법 설계</li>
+            <li>1:1 맞춤형 심층 복지/지원금 발굴 컨설팅</li>
+            <li>민간 복지재단 및 외부 후원 연계 지원</li>
+            <li>관공서 방문 동행 및 서류 신청 밀착 지원</li>
+            <li>지속적인 사후 관리 및 모니터링</li>
+          </ul>
+        </div>
+      </label>
+
+      <a class="plan-cta" href="https://open.kakao.com/me/merryonly_rd7" target="_blank" rel="noopener">이 유형으로 상담 문의하기</a>
+      </div>
+    </details>
+    <details class="plan-acc">
+      <summary>06. 도약 · 취업 지원 연계</summary>
+      <div class="plan-acc-body">
+      <p class="plan-desc">아래에서 상황에 맞는 유형을 선택하실 수 있어요.</p>
+
+      <label class="plan-opt">
+        <input type="radio" name="plan06">
+        <div class="plan-opt-body">
+          <div class="plan-opt-head"><strong>기본형</strong><span class="plan-price">₩3,000,000</span></div>
+          <p class="plan-amt">일금 삼백만 원</p>
+          <ul class="plan-feats">
+            <li>취업 목표 진단 및 취업 로드맵 설계</li>
+            <li>이력서·자기소개서 작성 및 첨삭 지도</li>
+            <li>직무·산업 분석 및 지원 전략 수립</li>
+            <li>면접 대비 코칭 및 모의면접</li>
+            <li>포트폴리오·경력기술서 등 지원서류 보완 지도</li>
+            <li>기타 갑·을이 협의하여 정한 커리어 컨설팅 사항</li>
+            <li>취업 희망 기업 분석 방법 안내</li>
+            <li>취업 필요 프로그램 연계 1개 + 생활비 활용 가능 복지 연결 1개</li>
+          </ul>
+        </div>
+      </label>
+
+      <label class="plan-opt">
+        <input type="radio" name="plan06">
+        <div class="plan-opt-body">
+          <div class="plan-opt-head"><strong>고급형</strong><span class="plan-price">₩6,000,000</span></div>
+          <p class="plan-amt">일금 육백만 원</p>
+          <div class="plan-group">
+            <p class="plan-group-title">1. 진로 설계 및 취업 전략 코칭</p>
+            <ul class="plan-feats">
+              <li>목표 설정: 취업 목표 진단 및 맞춤형 취업 로드맵 설계</li>
+              <li>기업·직무 분석: 관심 직업군·산업 분석, 희망 기업 분석 방법 안내, 지원 전략 수립</li>
+              <li>실전 대비: 면접 대비 코칭 및 모의면접 진행</li>
+              <li>맞춤 컨설팅: 갑·을이 협의하여 정한 커리어 컨설팅 제공</li>
+            </ul>
+          </div>
+          <div class="plan-group">
+            <p class="plan-group-title">2. 서류 및 이력(스펙) 구축</p>
+            <ul class="plan-feats">
+              <li>기본 서류: 이력서·자기소개서 작성 및 첨삭 지도</li>
+              <li>심화 서류: 포트폴리오·경력기술서 등 지원 서류 보완 지도</li>
+              <li>이력 자산화: 수료증·자격증, 기관 검사 내역, 활동·프로그램 참여 이력, 경제활동 이력(알바·직장·프리랜서 등) 체계적 정리</li>
+            </ul>
+          </div>
+          <div class="plan-group">
+            <p class="plan-group-title">3. 퍼스널 브랜딩 및 디자인 지원</p>
+            <ul class="plan-feats">
+              <li>브랜딩 기획: 이미지 퍼스널 컨설팅, 닉네임 컨설팅</li>
+              <li>시각화·채널 구축: 로고 디자인, SNS 채널 설계, 웹사이트 커미션 제작, 노션 자기소개 포트폴리오 제작 등</li>
+            </ul>
+          </div>
+          <div class="plan-group">
+            <p class="plan-group-title">4. 체계적인 관리 시스템 (엑셀 툴 제공)</p>
+            <ul class="plan-feats">
+              <li>취업 이력 관리용 엑셀 파일</li>
+              <li>개인 활동 이력 관리용 엑셀 파일</li>
+              <li>희망 기업 공고 상세 관리 엑셀 파일</li>
+            </ul>
+          </div>
+          <div class="plan-group">
+            <p class="plan-group-title">5. 복지 혜택 및 지원금 연계</p>
+            <ul class="plan-feats">
+              <li>프로그램 연계: 취업 필요 외부 프로그램 5개 이상 연계</li>
+              <li>생활비 지원 연계: 생활비 활용 가능 복지 제도 5개 이상 연결</li>
+              <li>기관 검사: 각종 외부 기관 검사 연계</li>
+              <li>꿀팁 제공: 아르바이트 병행 시 지원금 수급 요령 안내</li>
+            </ul>
+          </div>
+          <div class="plan-group">
+            <p class="plan-group-title">6. 사후 관리</p>
+            <ul class="plan-feats">
+              <li>컨설팅 종료 후 사후관리(A/S) 1회 제공</li>
+            </ul>
+          </div>
+        </div>
+      </label>
+
+      <a class="plan-cta" href="https://open.kakao.com/me/merryonly_rd7" target="_blank" rel="noopener">이 유형으로 상담 문의하기</a>
+      </div>
+    </details>
+    <details class="plan-acc">
+      <summary>07. 자아 탐색 · 직업상담 연계</summary>
+      <div class="plan-acc-body">
+      <p class="plan-desc">아래에서 상황에 맞는 유형을 선택하실 수 있어요.</p>
+
+      <label class="plan-opt">
+        <input type="radio" name="plan07">
+        <div class="plan-opt-body">
+          <div class="plan-opt-head"><strong>기본형</strong><span class="plan-price">₩3,000,000</span></div>
+          <p class="plan-amt">일금 삼백만 원 · 진로 방향 설정 및 기초 진단</p>
+          <ul class="plan-feats">
+            <li>현재 성향을 파악하고 스스로 취업 준비 방향을 잡도록 기초 진단과 표준 가이드 제공</li>
+            <li>온라인 직업 심리·성향 검사(직업 선호도·가치관 검사 등) 실시 안내 및 결과지 제공</li>
+            <li>기본 결과 해석 상담 1회: 전반적 성향과 강·단점 파악</li>
+            <li>기본 진로 추천: 과거 경험·보유 자격증 기반 도전 가능 직업군·직무 리스트 제안</li>
+            <li>취업 준비 표준 툴킷: 이력서·자기소개서 기본 양식, 범용 포트폴리오 템플릿 제공</li>
+            <li>직업 훈련 기본 안내: 국민내일배움카드 발급 방법 및 HRD-Net 활용 기초 안내</li>
+          </ul>
+        </div>
+      </label>
+
+      <label class="plan-opt">
+        <input type="radio" name="plan07">
+        <div class="plan-opt-body">
+          <div class="plan-opt-head"><strong>고급형</strong><span class="plan-price">₩5,000,000</span></div>
+          <p class="plan-amt">일금 오백만 원 · 1:1 심층 코칭 및 커리어 브랜딩</p>
+          <ul class="plan-feats">
+            <li>숨겨진 강점 발굴부터 서류 완성·실전 면접까지 전 과정 전문가 밀착 동행 (프리미엄)</li>
+            <li>전문가 심층 검사 및 입체적 해석: 갤럽 강점 검사(CliftonStrengths) 등 심층 검사 후 다각적 분석 및 다회차 심층 코칭</li>
+            <li>개인 맞춤형 커리어 로드맵 기획: 프리랜서 경험·외부 활동을 엮은 나만의 차별화된 직무 서사 구축</li>
+            <li>이력서·자기소개서 1:1 마스터링: 타겟 직무·기업 맞춤 전면 첨삭 및 마스터본 공동 작성</li>
+            <li>프리미엄 포트폴리오 기획·제작 코칭: 경험을 시각적으로 돋보이게 구성하는 기획·디자인 코칭</li>
+            <li>실전 모의 면접·스피치 코칭: 비디오 촬영 모의 면접, 답변 피드백, 시선 처리·비즈니스 매너 코칭</li>
+            <li>밀착 사후 관리: 취업 달성 시까지 정기 멘토링 및 조건 맞는 히든 채용 공고 우선 매칭</li>
+            <li>컨설팅 종료 후 사후관리(A/S) 1회 제공</li>
+          </ul>
+        </div>
+      </label>
+
+      <a class="plan-cta" href="https://open.kakao.com/me/merryonly_rd7" target="_blank" rel="noopener">이 유형으로 상담 문의하기</a>
+      </div>
+    </details>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WIDGETS ============ -->
+<section>
+  <div class="wrap">
+    <div class="widgets">
+      <div class="widget">
+        <div class="stamp"><span>OPEN</span></div>
+        <h4>상담 가능</h4>
+        <p>지금 문의하시면<br>순차 안내드려요</p>
+      </div>
+      <div class="widget" style="display:flex; flex-direction:column; justify-content:center;">
+        <h4>운영 시간</h4>
+        <p style="font-size:16px; color:var(--mark);">평일 PM 12:00 – PM 8:00</p>
+      </div>
+      <div class="widget">
+        <h4>SNS</h4>
+        <div class="widget-qr">
+          <a href="https://open.kakao.com/me/merryonly_rd7" target="_blank" rel="noopener">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAyAAAAMgCAIAAABUEpE/AABGgElEQVR4nO3dX6hc15kg+s8XPZSCBsrGA8fGFyKRe2mlMyFHSYdI8TT0MW5oTXogdncgVicQTkwwB9EYWTTm2ITGFqaxjGnEwRjnYMjEHrgTu6HHaGAan0BubDWJLYXc2Ard4ahhgnUejF0wIqoHge5D2bL+1661165dq/bv9yDKx7Vrr1p77VVfrW9/u265ePFiAACQz//RdgMAAOaNAAsAIDMBFgBAZgIsAIDMBFgAAJkJsAAAMhNgAQBkJsACAMhMgAUAkJkACwAgMwEWAEBmAiwAgMwEWAAAmQmwAAAyE2ABAGQmwAIAyEyABQCQmQALACAzARYAQGYCLACAzARYAACZCbAAADITYAEAZCbAAgDITIAFAJCZAAsAIDMBFgBAZgIsAIDMBFgAAJkJsAAAMhNgAQBkJsACAMhMgAUAkJkACwAgMwEWAEBmAiwAgMwEWAAAmQmwAAAyE2ABAGQmwAIAyEyABQCQmQALACAzARYAQGYCLACAzARYAACZCbAAADITYAEAZCbAAgDITIAFAJCZAAsAIDMBFgBAZgIsAIDMBFgAAJkJsAAAMhNgAQBkJsACAMhMgAUAkJkACwAgMwEWAEBmAiwAgMwEWAAAmQmwAAAyE2ABAGQmwAIAyEyABQCQmQALACAzARYAQGYCLACAzARYAACZCbAAADITYAEAZCbAAgDITIAFAJDZtrYb0KzVXXvabgI39Bevri9+YbHtVkxDK+PwzsPLEbHy0Mr0d53m9G9O/2j/gbZbMZkjmycTtjr+349HxBt//Vju5jQr7c2uPbcWEe89vZ6w7eFfbUREf0d/0g0H7w+e/vJSwh6ZjrSxVBwrWAAAmc35Chaz7OzZsx1ZwWrFR2sG5axgDd4ftN2EKTnzuzNtN2F60tauPnIhcbvhhWH6TiETARat6W3rtd0EaENq3AAURIoQACAzK1i0ZhiW8fnE+TjfdhOmxbwLHeBEpzW9kCLkE9tje9tNmBYpQugAKUIAgMysYNEalT50lHkXOsCJTmtUEdJRUoQV6ShKJkUIAJCZFSxao4qQy6ki5Go6ipIZv7RGFSGXU0UIzBMpQgCAzKxg0RpVhHSUeRc6wAoWAEBmvknRGrdpoKNcgwUdIMCiNaoIuZwqQmCeSBECAGTmmxStcZsGLuc2DcA8EWDd0JHNk203oQDrL65vPrGWtu30qwhP/POJiHjtgZWEbW87eCAiDj18KHObxjEOq7jz8PLKQymHtR015t17fng0IpbuXsrWGK7hpKtiddeetpsw66QIAQAys4JFPTWSHS1UEZbVWqorK+lWo7UdSqRGaYcVriTAop4aI6iFKsI6rXVb1IbVqiIsayar0doO1VpGaYcVriRFCACQmS8I1FMn6VZUFaEUYdNqJb/KyiVJEUIHCLCopzNJN7dFnWllzWRShNABUoQAAJmV9b2P2VNWXV5nEpqdI0UIzBgBFvWoIiQTVYRVSBFCKaQIAQAyK+t7H7OnM0k3VYRNU0VYhRQhlMIKFgBAZlawqKczVzWV1drOKWsmcw0WdEBZ0xKzpztVhFKEs0yKcC6VdVjhSlKEAACZWcGiHrdpIBO3aaiiWynCsg4rXMn4pR5VhGSiirCKbqUIoWRShAAAmVnBym94bnj6N6ev+EsMr1qtGWXHLv9jlb/c6KXqv/jilxarv8ErtJR0O/XWqU9ep3LXnf1fZ5P3OBwOR/tNPi5pTrx1Im13/dv7EbHz0zsTdjoawMNzw+q7u9Qt6WOphveeXT+xd0+0dwZN9OLvPbs+yZu7wrun342IXq9XfXeX/yXt6AzODSLi9G9OJ3Rdp5z+zelRX83gqLvu7nZ/evdooqAJAqz8Tv/m9I+/sdx2KyazuHkyccuW6vLq9PCRpDe7umtPRPz4uZcStj345vGIWFhYmHTDwWDw9J6lhD1ekvZmf7T/QPIe08dSPa99Y6WV/U7Z5lNrEbGZunna0Tn5i5MR8fryI6m77Yo6J04r3n10ZfnBwj6tCiJFCACQmQArvxaK41pUVhUhM6xb9XEwCySxmqR38+vW9QedqSKspawat5aoj5tdBvC8cmSbZAULACAzK1j5dSvz5dadVTjPKJoBPK8c2Sbp3fw6lPkKv+4HNEYCq2l6uElShAAAmVnByk+KsKJudRTjqCLkaj6gmqaHm2QFCwAgM+Frfq7BqqhDHeVChwrcpmF2GcDzypFtkgArv25lvlQRVuE8o2gG8LxyZJskRQgAkJkAK78OZb7CbRoAiiVF2CQBVn5ShBV1q6MYRxUhTJsUYZMEWAAAmQlf85MirKhDHWUdvgJVhLPLAJ5XjmyTBFj5dSvzpYqwCucZRTOA55Uj2yQpQgCAzISv+XUo8xUdqiK8Z/1oRJx669RHJ82F+ORBRGy72YPejtbe6equPQXt8baHDkSM6cyIKzt/W0TEB8deSt5pW247eODmb+q6Dz54rrx3mk4Cq2l6uEkCrPykCCsqq6OW/mTp0r805NDhQ2kbrhYYYB16OOXNrnYqwPIB1TQ93CQpQgCAzISv+UkRVtStjoJySSTNK0e2SQKs/MrKfNWlihDmng+KeeXINkmKEAAgMwFWft3KfHWmihBg3kgRNkmABQCQmQArP9dgVdStjgKYNa7BapLezU+KsKJudRSUSyJpXjmyTbKCBQCQmRWs/LqV+XKbBph7PijmlSPbJL2bX7cyX6oIgYZIYDVNDzdJihAAIDMrWPlJEVbUrY4CJuUDqml6uEl6Nz8pwoq61VFQLomkeeXINkmKEAAgMytY+XUr86WKEOaeD4p55cg2yQpWft3KfKkiBCiUFGGTBFgAAJlZH8xPirCiOh118KfHz8f5iNge22/yICLOx/lPHvS2pze3S/7w7x6JiL17916nD2/8ICK2x/Zjf7y/xZbPvYNvHo/4aOGh4nG5/ACl2bd3X0Ts/Okr1YfBRA9u9FL9fj+5zVQiBGiS3s1PirCiOh21cNdC+o4ZZ6G/EBE779rZdkO42sJCCyO/1+uF8TCXpAibJEUIAJCZFaz8pAgrUkU4u0wM0AXO9CZZwQIAyEz4mp9rsCpym4bZ5coM6AJnepMEWPlJEVbUrY4qi4kBusCZ3iQpQgCAzISv+UkRVtStjiqLxAF0gTO9SQKs/LqV+VJFOJdMDNAFzvQmSRECAGQmfM2vW5kvVYRzSeIAusCZ3iQBVn5ShBV1q6PKYmKALnCmN0mKEAAgM+FrflKEFXWro8oicQBd4ExvkgArv25lvlQRziUTA3SBM71JUoQAAJkJX/PrVuZLFeFckjiALnCmN0mART1lVRFeiIgYDAdXBcHDGF77l7gyVq7ylxu9VH9HP0/7p2Z7O7sdnrtiSFQ/Lt0xHA4jrv5cvG5HXbfrEofihct2Pcnueh8fK9+mZtP2XkunejdIEQIAZGYFK7/FLy0ubp5suxXTUlQV4Ym3TkTEaw+sTHm/B396PCIW7lqY8n4j4khRQ/GJz+9L2/DOh5dXDk71sA7eH0TE019emuZOI+KJzyZ20UjaeNj4yUZEvP69RxK23fXoSkQsP7icsG1xyjrdaJoVLACAzKxgUY/bNFThPGva1Hu4W9d+Oc1hciZ+6imrilDJzLya+pHtVrFwDS5vp7OkCAEAMrOCRT1l3abBeJ9XjuyskiKks0xL1FNUFWFrpCabpocbVdaVADAbpAgBADKzgkU9youqcJ41TRVho5zmMDkTP/WUlTuQSJpXqghnlRQhnSVFCACQmRUs6lFFyCxwZGeVFCGdZVqiHlWEVUhNNk0PN6qsKwFgNkgRAgBkZgWLepQXVeE8a5oqwkY5zWFyJn7qKSt3IJE0r1QRziopQjpLihAAIDMrWNSjipBZ4MjOKilCOssKFgBAZr733dD6i+sRERc+7qTrPoiIbRM+GPuaRe1l84m1m/ThzdW5imX9hfWENzUYDJL3WEtp134d/x/HI+Ls1tmUUdeKGvt9+b++fP7c+YgJz6Da1l9cTzlha+604olz5RlU58QZbTtmv3H9EXXgmwcioteb9lVc6y+sX92kmKt5O89eGEeAdUN1QgeqqJM72Hwq/egc2TyZsNXqrj3JeyzuPHtj5bHkbdO6NyJO/OzEa99eSdxrjR5+Z/Vo8rZpb3btubVInWHu+eHRiFi6eylh26g3jOucOJtJexx+/f5oI8CqM73AJVKEAACZlfbNmjmifptsyspZ1Gjt9tierx0zr6zDClcSYNGabt2qkXHOx/n0jcuayWq0tlYvFaeswwpXkiIEAMjMFwRa06F7Yct0VFAr+VVWD0sRQgcIsGhNh+5A6DxrWlk9LEUIHSBFCACQWVnf+5grqgjJRooQmDECLFqjipDLqSKsQooQSiFFCACQWVnf+5grqgi5nCrCKqQIoRQCLFqjipBsyuphKULoAClCAIDMyvrex1xRRUg2UoRzqazDClcSYNEaVYRcThVhFd1KEZZ1WOFKUoQAAJn5gkBrVBFyOVWEVXQrRQgls4IFAJDZnK9g/cWr6xFx9uzZ0fXUwxiOVk0uf/DRUy9ERPS29UZ/6cXVD677nBu9VN7djX2pa58ztuXXeU7lll96TvWOuu7u9izuudnBu6l7nj9aZXdXtfzWf39r8h7rOPbH+5O3/erak5E0DO6444667S5IjZnsnvWjoyE00QAenhtGxOqu9DGcpsVrsNLe7G0PHYiIxS8sJkw+/R39tKb2b+9/9fkn46azQdNzXcLubvRS8/QZ1KkV2DkPsBa/sHjpX+bJ0r1LbTdhSvb/WXpw1iE1km5Lf5IylgbvDyLi7XgyfcdJiksR9vv9mPoJ29vW23+vE4eWSRECAGQ25ytYQCk6dJuGGoq7TUOHfrABrtSZaQmYbR2qIqyhuBSh+wnTWVKEAACZWcECyjf1mayt3yGQIoRSCLCA8k09RdjWbXKlCKEUUoQAAJlZwQJmgirCKqQIoRSdmZaA2aaKsAopQiiFFCEAQGZWsIDyqSKcVVKEdJYACyifKsJZJUVIZ0kRAgBkZgULmAmqCKuQIoRSWMECAMisM9/7gNnmNg1VuAYLSiHAAsqninBWSRHSWVKEAACZ3XLx4sW228AnVnftaWW/RzZPpm24/sL65lNreRtTRXKDW9HWYS1OK4e1ztEpaxxGaUPx8M83IqJ/e7/thkxDK4dm16Mryw8uT3+/HSFFSD1GENAQ00vT9HCTpAgBADITYFFPZ6q3AOaNCbxJAizqscIMUCgTeJMEWAAAmQmwqMcKM0ChTOBNEmBRjxVmgEKZwJskwAIAyEyART1WmAEKZQJvkgCLeqwwAxTKBN4kARYAQGbCV+qxwgw0xPTSND3cJCtYAACZWcGiHiMIaIjppWl6uElWsKjHCjNAoUzgTRJgAQBkJsCiHivMAIUygTdJ797QiX8+ERFx4eNOuvbBJaNV1m3Xe3Dtc27+UqW54/Y7NttuA3TH6d+cjojBYPDRf086+RTl5C9ORsT2f7f9Zu8urjejbou9X9qbttOtra0zvz0z2e5qfii0l6cbDAYffdJdct13F9dp+d67E3u4O6xgAQBkdsvFixfbbsOMWt21Z/o7ve3ggUMPH5r+fltRp4ePbJ7M2JK5tP7CekRsPrU25f06NI1qZV6q487DyxGx8tBKwratTBHPHHvmg2dfSt5vK5LfbJ0ePvyrjf6OfvLmXVDgqvF8U9MBzJHetl7bTZhMLwprcFt01FhShAAAmVnBmjEOCJkMLwzbbgIYh3NrGEOLWDfn83zGSBGSSXGpGeaScTivRFdjSRECAGRmBWvGOCBkMgypGdpXXIqwuAa3RYpwLJ/nM0aKkEzMfcyC4lKExTW4LWaYsaQIAQAys4I1YxwQMpHpYBYYh/NKinAsK1gAAJlZMJkxrsEiE5eSMAuMw3ll+WosAdaMcUCAOVJcilD5bUVShGNJEQIAZGbBZMZIEQJzpLgUoVWZinTUWAKsGeOAkElxqRnmknE4r6QIx5IiBADIzILJjJEiJJPiUjPMJeNwXlm+GkuA1Yg7H16OiOGF4WhyufxBRPS29W704INjL60+99L0G3xk82Tahif++cRrD6ykbfupB+/v7+jHDTrq5l23umtP2k6Lk3xo6hdD3XbwQJXjctUBKu7QPP6rN3s7uvJRcefDy2NnocsfRMTwwvCDY+mTUnEpwpoNvu3ggbis6xLOoEkP0B133VGnwcme+Py+5G2Tp7WySBECAGRmBasRKwcTF3VWa3xTbMW7/9+7ydvu/dLepXuX0rYtrqOmr84C/j3PH42ItKOz+ux68n5bMRwOu7OClTY1bXxuMSJe/94jCdsWlyKs0+Cv/XBt7917MzaGogmwqKfGCCoud1CWWt3bpYnBjSXHc5pX1KUTh7GkCAEAMhNvU0+NssficgdlqdW9XapmVQzVqG6d5l06cRhLgEU9dXIHUjMzq0sTg3HYqOJShLXGQ5dOHMaSIgQAyEy8TT11UoRSMzOrS5kO43C8Ll0JUGs8dOnEYSwrWAAAmVnBoh7127PKbRoqcg3WeE7zirp04jCW4UA9XcodlEUVYUVShI3q1mnepROHsaQIAQAys4JFPW7TMKtUm1dkHDaquBSh3Dq5GA7Uo4pwVimGqsg4HK9LVwLIrZOLFCEAQGZWsKhHedGskumoSIpwPKd5RV06cRjLcKCeLuUOyiLTUZEUYaO6dZp36cRhLClCAIDMrGBRjyrCudSlicE4bFRxKULlt+Ryy8WLF9tuQ4NWd+1pZb9HNk+mbVhcg4fnhoNzgyv+dOGaWea6f4k49sf703YaEQffPD7p7mJbnPzFyYh4468fS95vmr94dT0i7li44+pWjWv5h4MPf7T/QMOty+yjQzPJcRk5+YuTyYfmUw/ev/yd5Yl2d+kvdcZhHWkn3WAwiIjhuWHEdd7LmL9ELCwsJOx0OBxe2vVEu4sL0b+9HxG9XkqicGtr6+YvfqO/fPj+hz/6z4WdOJ2S/IlTFilCAIDMLGhSS29Hb2FHynfimtK+iN/672/N3pIqRmtXCW1O+97frrRDExG33pp+dPr9fvJ+y9Lv9yMi+lPd6WgcTr+HO3JMmVcCLLpEjc+8cmSBGSNFCACQmRUsusR4n2Hn43z6xo4sMGOsYAEAZOZ7HzTPFUIVbI/t6RvrYWDGCLCgec6zpulhYMZIEQIAZOZ7H10ikTSvHFlgxgiw6BLjfYapIgTmiRQhAEBmvvdB8ySwKlBFCMwTARY0z3nWND0MzBgpQgCAzHzvo0skkuaVIwvMGAEWXWK8zzBVhMA8kSIEAMjM9z5qGQ6Hw+Hwo/8YjaabJ2uqPKeCwWBQ9aW2ffKcDz/8sO6Ok3w4+DAier3eJ02KSh012rAjtm9LryIcDoeDweBmz9g2c2nEwblBpdEbkw3yWi91o+dsi4jo7+iP28d1jOaHT2aJSZsUKe+uUycOM+uWixcvtt2GBq3u2tPKfo9snkzbsE6Dv/vTV3betTN58zTrL65vPrE25Z224raHD0TEoYOHEratc1iTx1IdnWrwwZ8fX7h9YdKttt7fiohjX96fvN/ipB3ZtibhOoobw600mLGkCAEAMpMinB+17tOYbMbSLs3pRW/8kyhQ2pE1HoCbs4IFAJCZFaz5UavKPVlnRtDwwvWu0qV8w3Bkgfw68/HYAVKEjeptkxKaT5J9QBOkCAEAMrOCNT+kCBslRTiv0lKEEovAzXXm47EDpAgbJUU4r1QRAk2QIgQAyMwK1vyQImyUFOG8kuwDmtCZj8cOkCJslBThvJLsA5ogRQgAkJkVrPkhRdgoiaR5pYoQaEJnPh47QIqwURJJ80oVIdAEKUIAgMysYM0PKcJGqSKcZV97ee3s/zobEb0dvV7virWl4XAYEWe3zm79bisifv/iK1dtK9kHNKEzH48dIEXYKFWEs2zvV/bGV6o99fHVq//SmTEMTJMUIQBAZlawGrH+wvrl/zm8MLxq/WOUb7r8j/UzUL0dKUsso/2+9OJLcYN23vwvW+9vpbS1QLs/t7uV/a49txbXrJ9VPFJxvTFW5S91XBr8VXZ3ecs/u/uze+/eW3PvKa6ZBS9lFc+cORMRZ/7tzOgvV7yXYecSi2vPrSWMuhKNxnDCOfWf/vw/LSwsTK+hH6vyiZNlfrj8pQ5850DpB7ppVrAAADKzgnVDRzZPpm146q1TP/7Gctq2tz104NDhQ2nbJhpGRGw+tZb8Askdtbprz/R3Wpz3nl4f/6Tc7nn+aEQs3buUsG3CYf2LV9cjYvELiwm7a8LoMvmdn96589M7I2JwbjBaIXjv2NXHIm0crh1bi4j3nm3hyKY1eOMnGxHx+vIjCdvuenQlIpYfTJkSW5ki1o6tJc+HZ3Z/tpUVrDoTeLpvHogdLey2IAKs/GoVJU39gCih4joaHoe3HTwQH3/o9nf0m91Zbf0d/UMPH4qIePjQq//wakS8fejJWq/YpXm3uPLbWg3u1JGNobvB3ZwUIQBAZl2Kt6elVlA/9YpxVylyHc2MwzsfXo6I5YeWyx119339vtG/p399Ov1VirsxRI0GF3esazW4uCNbg+WrsQRY+ZWVIuzUjEBVDYzDwyc3+v1+/tdtSa2q0uLm3RoNLi5FWEtxR7YGKcKxpAgBADLrUrw9LWWlCOE68o3D7/70lZ137cz2cvOhS6d5cSnCWjp1ZC1fjSPAyq+sFKEqQq6j9jjc9fjK8ncSb1Yy/7o07xaXIixrAm+RFOFYUoQAAJl1Kd6elrJShN1awKeiGuPw4M+PR8TC7S3cbrEYxSWSOlVFWNQE3iLLV2MJsPIrbIW5SzMCVdUYh22FVh+loi5c/SuBo9uy97b1Zmi2m52WVKSKsKLijmwNUoRjSRECAGTWpXh7WqwwU7wZHIcXIiLO/O5MRJz6xam3/6bej9VEfPGZxxYXFyNi+7btC3dNd9VtBru3McWlCGvp1JG1fDWOACu/slKEqgi5jtmYGLbe39r4HxsR8c73j2Z/8bcPPfn2NX/82strEbH3K3uz7+4Ks9G901FcitBvEVYkRTiWFCEAQGZdirenpawUYbcW8KmopUzHYDCIiPUX1z849lIrDXjtgZWIeC0iIm47eGD5W8sR0b+9n3k3xSWSOlVF6LcIq7F8NZYAK7+yUoSdmhGoarrjcOMnGxHx+vIjU93rOB8ce+npj+O8g28ej4iFhTyXao1+x/C9LK81HaoIK+rSJ6oU4VhShAAAmXUp3p6WOkH9B8deWm0jOXLP80cjIrZ9vKBV8UHEqV+eWt21J22nux5f+ehX6irvLi7UGrOnf306In70nw+kv0SSLz7zWET0+/3rv5cbPxgMBm8fqlUud8/zR6vv7tKD0WLS69d7wYz3ET31y1MR8eP7CvhFnWP79o8eHP75RtROGi79yVLcoHvHuvPh5YjY/Qe7I1JO2DR7FvdERKwfnfg8vRCf/Q+fTd7vPesfFzeM28u1J07yvFRLgQmBjzr55tNCXOdY93f0p9vS8ljBAgDIzApWfiXe+GDp3qW0Dc/825kPUnd6x113JO83zeDcYJq7u2Tf3n2RdAXPYDB4O2qtYKX18I0WVw6f3Oj3+zWac4XFLyxGxOLmycH7g4h488SbozWt37/4Sq5dZPf0l5ci4lMP3n/o4UPx8W3i0zz+7ptPfHbfpFvtXtwdEUt3T/XEGR300cLbNCXvcWtr69p7cExDaZ+oux5fmf5h7Y7ShkMJunXdX53you50VIGJg5G/Ov5SXEpINWaUcdv/5/v3//n+iIjHV4fnhhHx6j+82sQdsOr7/QuvPPHCKxHx+L+8mVx01uv1RtfOX8o/VrE9tqftjmko7kwvrsFFkSIEAMjMClZ+JaYI06nfrqK08+zxd9+Mevmvmno7ehHxwLceiG89EBFbW1sTLfNMzRP/9746d3AYbfXVtScj4o2Vx6pscj7OJ+yIKSntTC+vwUXRu/l1KPMVpd2B0Hp4NS2GVte1sLBwZPPkpf9cf3F984m1FttzuVHkV+c3dvb/2f6IeCMqBVhShDOtuBmmuAYXRYoQACAzAVZ+UoQVtdBR2yzazoPl7ywf2Tx5ZPPk6KZQs+C1B1Zee2Bl/cX15Fd4/F/erPK083FelnB2FTe9FNfgoujd/KQIK+pQR1mHb8bKwZXhd5Yj4onPT3y/gyZsPrH28o7tEfHAXz4w6ba9bb2v/v2TEfHGX98sVyhFONOKO9OLa3BRrGABAGRmBSs/KcKKVBFS36je8MjmyVNvnYqIH3+j5aThO39zNCJO/4fFhJuHjW4DdvMVLPnBmVbcmV5cg4tiBSu/DmW+osAqQkvic2rxS4uLX1q8vNiwRT/af2BwbpD2ywGjm7veyPbYLks4u4qbXoprcFEEWAAAmQmw8pMirEgVIU0YFRje9tCBdpvx9OeXnv58yq+83Ty3qIpwphU3vRTX4KLo3fykCCvqUEd1ch1+dFHUcDgc/dTgHbffMXowHYcOH3r5rjsi4p3VNn/NcHXXnoSs5V/940sR8aP/fJ0YUX5wphV3phfX4KJYwQIAyMwKVn5ShBWpImzUza+Vrm/r/a2IePfUuyfeOhERv3/hlbTXufPh5aV7l2JcaizBA998ICKO9/tR+Zf+mnD616cjYvfnJnh3N3my/OBMK+4TtbgGF8UKFgBAZsLX/Dp0aVEUeJuGDrjn+aPRwIJQRJz65akf35f5RlPvPbv+o2ev+IWZr/79k6M7QmUx+inl3nrv9eVHcr3mREaXUiVciXXP80df/97VbXYN1kwrboYprsFFueXixYttt6FBq7v2JG87IzfUadroVj1p5U4jrXRUR47sYDB4es9kh+bOR5dXHlzJ24z1F9Y3n1rL+5pV/OHfPvLAtyb+zZkbOfGzExHx2rczd051BQ28q2z8ZCMi2opQ0xTX23XmtOIUd3TSSBECAGQmRdh1LeTpaFLG5au159bee3p9/PMa8873j65+/2hEfPGZx+77+n01X23v3Xsj4szfPvLO99u5ccPw3DA+/m2fwkgkweQEWJ1n6pwXR/4lw6r78X86HhFvfK+1mrvrevvQk28fejIi/up/vhQRuz+TfnnZA996YLWlAGvtubWIOHT4UCt7r8UHBUxOihAAIDNfTGAeHPzp8Vr3JBsOI+KJz+7L1qBm/OhPD0TEpx68f/XR1eQXGV1gO/1rij947qWIiBJXsIDJWcHqumEMu3Vn1Llz20MHbnvowMJdC8mvcOa3Z5747L7Zj64u+f0Lr6zu2lMzQvruRuKdUWsaVeQBc0+ABQCQmRRh16kiLF2di6ZHv8f8429kvnfo1Kzu2nP45EZE9Pv9Sbfd+emddx5ejogpV0q+vvzIUnE3AVIKA5MTYHWeqbNkX3s5/f6fp946VW5odcnoRqwHf3584faJk6QrD61ExGqrt6Iogw8KmJwUIQBAZgIsKNjer+xN2OrMv505829n5mD56pJjX94/ODcY/e7TpL669mTu5oyx9butrd9tTXmnwJRZ+e06JYSF+otXExNbw+HwB0v3523MLBj9nmbCb5zt/7P9b8RUb6x68tTJiNh/V7YftAZmkBUsAIDMBFhd19vWU0hYosUvLC5+YTFhw4Lud5XgyBNHErb66tqT00wUnvrlqVO/PDW13WVwQTUMTEyABQCQmWuwOs8X0wJ98e9Srhlaf2H+70fw+xdfOf2X90XE7j+Y4Aeh9//Z/oiY2pVYv3/xlYiIx9N/7WfafFDA5Jw3UJ79fz7x9dHD4XDzqfSbZhXkR/sPRNLV7gAZSRECAGRmBSu/wbnB6V+ejojzcX57bL/8f52P8xGxPbZf+2D0hJ2f3lnnV3sT1L9Nw4mfnRg9GPvuLn9OXNY/1+2oa59z1UtN2ZnfnomIra2tm7y7uEHLJx0Gl54z+udavd7EdQnzfW37tV7+ry8/8M0HJtrkuxuvzOwNLLa2tiLizG/P7P7c7kj6aaA6br311mnuLouNn21E6uk5dvKpcgpPujvmz5wHWK2kCc785sxr315J2/a2hw7U+Wm5BPVLCJPfbFl+8KftfPTWH8PDYRdvdfbO6tGYMMDa+emdDTXmugbvD/q39ys++c0Tb0bE24eejB+uRcTeu1NuMJtsVK+6OPXpdHXXnuRtX//2IxlbMgXFJbXrHJ2OkCIEAMhszlewWlEr6Tb9A6KKcN498+wzbTehHcf/+/FIKgiYjrPvn62+gtX/9x898/yN0sbAjBFg5deLGkk34Q65/f6FV9puQjve+OvHYsIAa3S70TdWpnG/huG5Cb6J3dr76Coo1+tAKaQIAQAys4KVX1kpQj/2PN9GxY9dNrrGv2Ld5dJ/XIqIN5pt0UcmqgT88H9/OHogRQilEGDlV1aK0A8RzrdX/+HVtpvQso2fbMTH92ofq7djeqfD9v4Eyb5L+UQpQiiFFCEAQGZWsPIrK0Xosvr59sFzL7XdhJaNrljfvzlztYQLt09wS+HBYDB6IEUIpRBg5VdWihCYfR8OProGS4oQSiFFCACQmRWs/MpKEaoinFfDC47s/Hjv2fXRAylCKIUVLACAzKxg5VfWNVhu0zCvLl0WzaRue+hANFkf8MW/S79TvGuwoBQCrPzKShG6rB6uMvqJwA8ae/3FvYvJ20oRQimkCAEAMrOClV9ZKULmVa1xOHcG7w9G61JV3Lrj1ibbEjvv2jnR87e2ti49liKEUgiw8isrRaiKcF5V/PW9jqgeXUXEh+c+bKwhKRdgjX7tZ0SKEEohRQgAkNmcr2CtPbcWEe89vZ6w7ZHNk2k7LStF2O/1I+LOh5cjIrZ93ICKDyLiQuqD6ezuyle44/Y7Ju2fglnASjV4f9Dciy/+0cRXuC/cvvDh4eWIiAvx+rcfiYjXszfrpm47eCAiDj18KGHbl//byxHxzt8cTdj2ZvNS3OzcHwwGv3/hlYQ9tmh11560De88vLzy0Erati//l5ff+X7KoaGKOQ+w0kKrmspKEY72uHIw8fxkZrkBR7JGf8Bx56cnuwArIpbuXVq6d2n0ePXZFua0D469FBGRFGClhVYjB751ICL6/f6kG25tbR0rLcBK9t7T65EaYImuGiVFCACQ2ZyvYLWirBQhMB1fXXuy7SYA0yPAyq+wFCHMtY+u45kB+/9sf9tNAKZHihAAIDMBVn5ShMyOe57v+kWsl18h3qK/+H9auDgdaJGMVH5ShMyOpT9ZmnJJ/6zZ/Qe7qz/59K9PN9SMxS+l//4gUCIrWAAAmVkwyU+KkBniFJ/Em794M/trHv75xvgncV3mQ0pmBQsAIDNfb/NzDRYz5bsbr0TED5bub7sh03bw58cn3WTzibW8bfjay2sT/c40VzAfUjLjNz8pQmZKwm+zzIeF2xda3PttDx2IiL1f2dtiG4AWSRECAGRmBSs/KUJm0OGTG0/vaf92UFMzSoxO5NV/eDVjAw4dTvlpZGBuWMHKT4qQGdTv9z/14P2ferArV2IlJEbfPpTttwKPbJ7M9VJAoQRYAACZyUjlJ0XIbFp9dDUiVl+YOHdWloTVo63fbbW4d2Au+TzPT4qQWXb4VxtPf35uL8ZKuPQqIo798f4sexddAZdIEQIAZHbLxYsX225DgwaDQUQMLwxHq0rDuNmDiOhF79KD5NsDnnjrxGvfWMnS/okc/OnxhbsmvvHP8NwwIp74/L4GWkTj0pZMTr11KiJ+/I3l3M1p0xf/7rGIuO8v75t0w8FgUL++cmprV6M5bbTUffMJ7bpT3LEv51mrq+7Oh5cj4sA3D1w7x156cKMG12nt6DazVfaS8OlQ5cGke3n6y3O7rnytjqz1znmKsN/vT3+ntVKEMIlnnn3m0MMT3w5g8UuLEfHh+tHXlx9poFEtuPPh5YTQaqRmdPX4v+T/+cKbaGVOq6PX60XE9G9n3+5tZiGkCAEAspvzFaxW1KoirOF8nE/Yqq3WksUHx17a+uaBiFhYmPj7+tKfLMXzRyPi9e8VvI71h3/7SEQ88K0HErbNUjzY22bF+maGF8wwdJQAK7+2UoTbY3vCVj4eSnds3/5IvaZh6d6liLjj+Es/2n8gc7Om4msvr9X5sb8sxYOjAMJ5dCN6hs6SIgQAyMwKVn5lpQjdeWs+vPoPr9739cSrvHf/we5df7sSEZvfX8vaqAaN7neV8Hs4l6y/sJ6lJQkrNKd+eSoiFr+wmKUBM06KkM6yggUAkJkVrPzKugaL+fD2oScXFxcjdVHn1t6tuVvUoMfffXNU/J/mzG/PRMTmU+0s153+9ekf37ccEYvduBWQa7DoLAFWfmWlCFURzo0fLN0ftYOPmfXdn74SETvvSs8JjgzODX7wp/fnaFGiN38x1ftmtU6KkM6SIgQAyMwKVn5lpQgt4M+ZJz67b25+huK2gwdWHlqJj+8GnsUc/9D1bDLD0FkCrPzKShGqIpw/q7v2RMm/9vXVv39y/5/n/8m84//9eET84d8+8s73j2Z/cW5EipDOkiIEAMjMClZ+ZaUIoXX3rB+NiH179zV6ef6lVbHhX94XEU98dl9z++ISKUI6S4CVX1kpQlWEZPH4u29GRK/XGwwGo798OPgwIs7865kzW2dGf7mjf0dE7N69+6N7SbQ0/YzCuCObJ1/9b69GxNt/82Q77egGKUI6S4oQACAzK1j5lZUitIBPHdf+3HK/37/8QZ1fs2nafX95X0Qs3bv09B6lhU0xw9BZAqwb2np/K66MlkbZtKvip2EMr/rLh//7w6k08Gpn3z87yn1c286b/OXDc+20ltId+ZeTEfMwhfT7/VHF5YmfnXjt2yuN76/8HpvIKGU8eH9w6S8VJ9KaVy9c2mP13Y3+0uv1ejsEhWQgRQgAkNktFy9ebLsNM2p0M6E0ybcgqrPTthR0v6UTPzsREdNYpbjSwTePR8TCwsKkGw4Gg+Ts1UTH5cQ/n4iI1x4Y3zNf++FaROy9e+/YZ5ar+mn4qQfvX310tdHG5FXWDHP45EZclnSubmtr69i+9FuptTKntXJodj26svzg8vT32xEdW62m47o03ofnhhFRMdmx90t7I+K1cU878i8nu9CHo8/XU2+d+vE3xnz2HHr40FRaBM3owOncIilCAIDMhK/QvDZ+j+js4GxE7NxRrYhvW0TEd//nKz/40/uv/Z9/9Y8v7f7c7pyNK8HilxZ3v/tm3OCWpH/1jy9F1h9JhBb4qbQmWcECAMjMChY0r43z7My/nomInXdNcBuqnZ/ZObr8aGtrKyLiQizcNfGF+fPk0j3fz/zbmYg4c+bMzv9zZ0Ts/Mzs3twLJiAEaJLepUu6tB5++tenI2LpT1KKEBMKHufb6Haps3zT1PnUpRO2HXq4SVKEAACZWcGiS7o03t97dj0i4uC0b/oF2XTphG2HHm6S3oXmWYcHZpCpqUlShAAAmVnBguY5zy4zeH9wdutsfFyjt7W1tfH/bkTE7194paCfXYJ5YGpqkt6lS6yHN2/t2FpcugIMmGWmxCZJEQIAZGYFiy4x3htz5rdnIuK6v7QDzChTYpP0LjRvftfht363deyP97fdilrO/PaMO7PTUfM7Nc0CKUIAgMysYEHz5vE8e+bZZyLig2Mvtd2Qun7wp/d/6jv3R8Tq46tttwWmax6nptmhdxsxKqSKbR8vwF7+ICIu3PhBgdaeW4u46Zu67oOI+79+/5R/S3jh9nZ+Ym/9xfWI6Pf7VYfBxw+G54Y1d712bO1GL77z0zv3/dG+iOjf3q/+gqNrrV79h1c/eK740OqS37/4SkSsvvjK6D8P/vx4tDdauGT9hfWI6O3oTTqRDoe1TpzrTOA33d2lB/d//f6yfsdz63dblSbwuM7H2cpDK+V+bE2HFCEAQGa3XLx4se02zKjVXXumv9PbDh449PChtG3rNDj5Bo/rL65vPrGWtu1Xn39y/73FXB/dyniYsj/8u0cWdy9GxO4/2B2RuKrayjisY2yDv/bDtb137x093traiogzvztz5l/PRMQD33yg6eaVrq0TJ3ksPfPsM8mJ76+9vLb3K3vTtm3lxKmz08O/2ujv6Cdv3gUW+GZMcTUdNRrci16+dpDBO39z9J2IiLjn+aMRsXTvUrvtmRGvfXvltRv9PwHW3OltqzEvFTeB12ACH0uKEAAgMwHWjCluSbFGg4cX6l7BTVO2FTgUoXVdOmuGYQIfQ4AFAJBZl+LtIhSXwq9zDVadax1oVHHjEGZBl04c12CNZQVrxhQX8dZJEVphnllShHRVrXmpS2eNCXwsARYAQGZdireLUNwKs9s0zKXixiFkUmte6tKJYwIfywrWjCku4lVFOJekCCFBl84aKcKxBFgAAJl1Kd4uQnErzKoI51Jx4xBmQZdOHCnCsaxgzZjiIl5VhHNJipCuqnXpQpfOGhP4WAIsAIDMuhRvF6G4FWZVhHOpuHEImfix54pM4GNZwZoxxUW8qgjnkhQhJOjSWSNFOJYACwAgsy7F20UoboVZFeFcKm4cwizo0okjRTjWLRcvXmy7DQ1a3bUnedt7fng0IrbH9vNx/kYPIuJ8nJ/owc1f8/VvP1LrDac6snkybcOtra13f/tujOuo63bda99eydT8yaS92TO/PRMRW1tbUxgGWQZbW91b5cS57ps6c+bMO98/mrbTLz7z2H1fvy9t2xP/fGL0uTjRAfrwf38YEW+sPJa20xKlnTinf3s6IgZbg4SxXWc+TJ7Tnjn2zAfPvpS832QTnTiXd927//ru5hNraTu97eCBxT9arLKXaw/Q3q/stURzc1KEAACZiT9vaOnupenv9PXp77KehYWFhYWFtG1fy9uUhu38zM5L/xbh3UdXImLzqcSvtsnqnDjvpG549ndnk3e69yt7E7YavD+IiDeS99oZuz+zOyLiMynbtjIftpX5Sj5xzp8/v5m60/6OfiufdB1hBQsAIDMrWDCfunUXjKnPZGrUmRG1hqIQoEl6F+ZTt4o0p169pYSKGVFrKHap7HH6pAgBADKzggXzqbgc1qgmPJGZjEzk1slF78J8Ki6HNbq5TiKZDjKRWycXKUIAgMysYMF8kuloVHEZWOaVKsKZpXdhPsl0NKq4DCzzShXhzJIiBADITIAFzARVhMyCbiV/nThNEmABM0EVIbOgW8lfJ06TBFgAAJlZH4T5pIqwUd1KJDHDVBHOLL0L80kVYaO6lUhihqkinFlShAAAmVnBgvlUXA5LFSGzQG6dXKxgAQBkdsvFixfbbkODVnftSd72yObJtA1PvXXqx99YTtv2tocOHDp8KG3bVqy/sL751Nr095t2dE7884mIeO2BlYRt73x4OSJWDqZs28o4rKNTDT78843+7f1Jtxq8P4iIp7+8lLzf4jpq+g6f3IiIfr8/6YZbW1vH9u1P3q9D07RWenj6rA/m162ajuIanKq4jBsVpR1Z4wG4OSlCAIDMOrP+MEXdKpotq8E1Wqssf16lHVnjAbg5AVZ+UoSzq0Zru1Vb1CWSfUATpAgBADIra/2hDFKEc6lbN0bvEsk+oAkCrPykCOeSFOG8UkUINEGKEAAgs86sP0yRFOHsqlNFKEU4p1QRzq6yphe4kgArPynC2aWKkGtI9s2usqYXuJIUIQBAZr4g5CdFOJekCOeVZB/QBAFWflKEc0kiaV6pIgSaIEUIAJBZZ9YfpkiKcHb5LUKuoYoQaIIVLACAzKxg5ecarNnlNg1cw9VUQBPK+ngsQ7/fT952OBxu/GQjIuLCNQdnlN7adsO/7PuP+5Ir3Tb+aePmL379v0QMBoO0Pdb0US/FDTrqBl13+tenk/fYVhXhJ+90pMpxuRARccfOOyJi92d2N9m667jZAJ5wSF//L9d9qRraSvZt/GSj6ru77C97/mhPRPR39JtuXtFqnq3XmQ+j8pBOHuTMHSlCAIDMrGDlt/szu49snkzbdnXXntdfeCVt250/fWXnXTsn3Wp4bhgRr3/vkbSdRkTym61jddeeKe+xToowuYsGg8HTe5aS91tn18leX04fS61o6zYNiR31w6MRsXR34qiY/niY/qkaEf3b+8nvdO3YWp35MFlyg4//0/E3vvdY3sZUcfhXG1ZSb06ANT+2x/a2mzDP3Gh0XpVVRdit01zurIK2hqJC2rGkCAEAMrOCNT/Ox/mErZRQVaSKcF6VdQqknealauMDyple0TCGFrFuToA1P9JyBzJfFemoeVXWh0S3UoRtcKZXVNaJ0wopQgCAzKxgzY/E3IHLSKspK5FEdWX92HO3UoRU0NZQlCIcS4A1P+QOGmUqmVeqCCmaKsKZJUUIAJCZFaz5oYqwUWqL5lVZp4AUYdPKGg8tkiIcS4A1P1QRNkpHzauyPiSkCJtW1nhokY4aS4oQACAzK1jzQxVho6QI55UqQoqminBmWcECAMjMCtb8cHFGo1yDNa/cpmF2WV+vwG0aZpYAa36oImyUFOG8KusU6FaK0G8RzjApwrGkCAEAMrOCNT/cpqFROmpelfUtvFspwjY40ysq68RpxS0XL15suw0NWt21Z/o7/dSD968+upq2bSsNbstf/eNLuz+3O23b9RfWP8nsXIiI6G3rfbS2v+2Tv8TlCaAL8d7T67Va3Bm3HTwQEb1e76OvYBeu05kf/eXC8NJzIqK3rbf51Fryfu98dHn87uKKQzx6zntPpR/Zgz8/vnD7wqRbbb2/FRHHvrw/eb9p7vnh0YhYuntpmjs9/ZvTEfGj/QemuVOq2/XoSow7Pa89pyJamxKPbJ5sZb9TJkUIAJCZFGF+v3/hlUhdweqUs2fPJq9gLT+4nLDVif+wJyJe+/ZK2k67Y/FzixGxdG/KMslqjRWslQcTD81qjRUsVYRjnT17dvo7pbq0+TAiVi3qN0mARWtaqN4y3ivqUkepIgSaIEUIAJBZl76oMmMUocyuLt3gsaxx2E4VYZfGA+QiwKI1bug3u7o0MfgtwvG6NB4gFylCAIDMfDGhNS3c0E+mo6IudZQqQqAJAixao4pwdnWpo1QRAk2QIgQAyKxLX1SZMWVVb3WLFOGsUkUIpbCCBQCQmRUsWuM2DbOrSxOD2zSM16XxALk4b2iNKsLZ1aWOUkUINEGKEAAgMytYtMZtGmZXlzrKbRqAJnRpHmXGlFW91S1ShLNKFSGUQooQACAzK1i0RhXh7OrSxKCKcLwujQfI5ZaLFy+23YYGDc4NIm6wvj3649iJ40K151z2Ur1tvd6OxKTD8NxwfNiRt+UTvruMu+vv6CdP3Ku79iRuGXH45MYVTYrGO+rpPUsV23atK1pbbXdXP23y54wGcFqZZ51D0yk3PLKXXO/Y1RlLNR0+uZEw6uo0+Lsbr0TErf1bq+/uZs+JcU+rfU61dXSObJ5M27DO2Xrwp8fHfNJdt6O2RYwm/w6QIgQAyGzOV36LC5N7O3plXXJbon6/33YTJlBWa6muuCM7/QaP1q6K66iO6PV7xX3CTpkVLABgMtYCxhJgAQBkJsACACZT1h16WyHAAgAmI0U4lgALACAzARYAMBkpwrEEWAAAmQmwAIDJuAZrLAEWADAZKcKxBFgAAJnN+U/lAFCqC203gBuTIhzLChYAM2mbRYDZJUU4lgALACAzARYAMBkpwrEEWADAZKQIxxJgAQBkNucXEA7eH0TE8IJAexb1b+/3thWzyDw8N4yIwblB2w2pajgcRsRgMGi7IcyJra2ttptQ2YXYej+xtf0d/d6OYualFhU0e7dlzgOsp7+81HYTuKGvPv/k/nv3t92Kqp74/L7kbQ++eTwiFhYW8jVnvJf+y0sRsfnU2jR3GhFHNk+mbbjxs43Xv/1I2rZ3Hl5eeWglbdvVXXvSNmxFcvfWsfGTjYg4tq+Ys3Xr/a06rW2lk7uz0+6QIgQAyGzOV7CYZR0qQnG/xAq2x/b0jfVwo3QvTE6ARWs6dG1cG+dZh7o3zGQN070wOSlCAIDMfDGhNYpQGtWt7pXDmksOKyWzggUAkJkVLFrjRsCNKq57z8f59I3NZHPJYaVkxi+tUUXYqOK6VxXh7NK9MDkpQgCAzKxg0ZoO3UfAbRqaZiZrlO6FyTlvaE23ytymrlvdK4cFzBgpQgCAzARYtKa4MjcapYoQmCemJVpTXJlbOgmsClQRzi7dC5OzggUAkJkVLFrToTI3VYRNM5M1SvfC5Jw3tKZbZW5T163ulcOaSw4rJZMiBADIzAoWrZl+FeFtBw9MeY8tKq5IUxVhFa/+t1cj4uzW2YgYxnBUKTK8MLxqwfKT/3XZc+LKdc3RCOlF75MH1zzno6e1NZRSD2tvR/ry7RefeSx52zrWjq2NHlQ5Lpf+V0xxGFz1UssPLvd6XVomn1xnpqXJHdk82XYTCrD+wvrmU2tp29apIizs6JT2W4T3PH80IpbuXcrXnPFUEVbx9t882dau00661V17srdkrP6OfmFTRMR7z6633YQJfWe57RbMOilCAIDMrGBRT40R1KEyt+KqCIubGIprMBTuUq6QGzEtUU+N1Ey3ytymrlb3FpdxK67BUDjR1VhShAAAmQmwqKdOirC0MrcO2dbC6rYqQiiICXwsARYAQGa+91FPnWuwupPCL+4KoTYa7DYNUJAOTeCpBFjUo4qwClWETSuuwVA4VYRjSRECAGTmex/1uE3DrHKbBornsM4wy1djCbCoRxXhrKrVvW1MDKoIuZrDOsOkCMeSIgQAyMwXBOpRRVhFaT/2rIoQuLkOTeCpBFjUo4qwClWETSuuwVA4KcKxpAgBADLzvY96VBHOKlWEQHMsX41lBYt6VBHOJb9FCNyUCXwsARYAQGa+9+V3+jenf7T/QNutmMyRzZOJW7ZURbi6a0/6jqevtATW68uPRMTrSdsmjyVVhDNu+ifd03uWprzHQn3th2sREds+PhFu/iAiLnz04LUHVpJ3KkU4lgArv8G5QdtNmCJVhFUUV0VYHDMZHbb37r1pG75WY6eqCMeSIgQAyMz3vvy6FdSrIpxV3epeKUKYrm590iWxggUAkJkAK79uFa+6TcOsGsawrB52mwYoSFnTSytMS/l1a+HUbxFWUdxvEbZBFSEUpLgZZvqsYAEAZGYFK79uLZy6TUMVbtPQNDMZTJfbNIxlWsqvW2NOFeGs6lb3ShHCdHXrky6JFCEAQGYCrPykCCvqVkcxjipCKIgJfCzTUn7dWjhVRViFBFYFqgihIB2awFNZwQIAyMwKVn7dWjhVRViFKsKmmclgulQRjmVayq9bY04V4azqVvdKEcJ0deuTLokUIQBAZgKs/KQIK+pWR02d3yIEmlPW9NIK01J+3Vo4VUVYhd8irEAVIRSkuBlm+qxgAQBkZgUrv24tnBZYRXhk82TCVqu79iTv8dgf70/etqa0N9uKvXfv3Zva2tVde1afXc/bniqm370191hnGE//xKkjuaPWjq29lzqWvvby2t6v7E3bNtnxfzqe3Mm7Hl9Z/s5y2rbTH0vFsYIFAJCZACu/bmWm3aYBYKS4qy1dvNgkAVZ+UoQVdaujgBLUmpeKu+imuAYXRYAFAJCZACs/KcKKutVRQAm6lXErrsFFEWDl163MV4FVhACNaOVXRzuV0yyKAAsAIDMBVn7dynypIgQYUUXIZQRY+UkRVtStjgJKUOvSheIybsU1uCgCLACAzARY+UkRVtStjgJKUOvSheIybsU1uCgCrPy6lflSRQgwooqQywiwAAAyE2Dl163MlypCgBFVhFxGgJWfFGFF3eoooATdyrgV1+CiCLAAADITYOUnRVhRtzoKKEG3Mm7FNbgoAiwAgMwkYPPr1qVFBd6mYeOfNj5qQAyv+rY6OnaX//Hav5Tl0puNau9u9Jd9f7QvIvr9fp09VuzM6x6FKn+59qWm7/LujXzvpdGum7LbDh6IiA+OvdRiGyZyx113vJe67bv/+u6H5z+M1CMVScPgxFsnUtsbm0+tbXx650S7a31EFUSAlV+3Bl9LVYRHNk8mbHXiZyci4rVvryRse+fDyxGxcjBl21asv7AeEa9/75GEbXvPH42IpXuXErZN22OhinuzaSdOHYcePhQRMfq3BPd9/b77vn5f2raru/Zs5m1N84obwwWRIgQAyMwKVn5ShBW10FEFJjSTdavaHGDGmEfzkyKsqKyOKu62qN0qhgKYMVKEAACZWcHKT4qworKSbsUd1lrda2IAqMc8ml9Zma+6yvotws4kNKNm90oRAtQjRQgAkJkVrPyKyyXVoopwLpkYAOoxj+ZXXC6pls4k3YqrIqxFihCgHilCAIDMrGDlJ0VYUVlJt7JaG6oIAVplHs2vrMxXXd2pIiwtRaiKEKBFUoQAAJlZwcpPirAiVYSN8luEAC2yggUAkJkvqvm5BquisjqqvGuw/NgzQHsEWPlJEVZUVtKtuMOqihCgRVKEAACZ+aKa3+5P73730ZWIiG0fp1oufxARFyZ8cKOXusmDyi++vbe91rst6sYHOz+9MyJ2Pb6S0HWbT61FxOqzLyXs9/DJjYjo9/uTbjg8N3zi8/sS9njJrkdXEkbdZ/+vz6bv8fGVCXYXecb25hNryQ2u44rujapvoa3W0rSv/v2TZ98/G5EytkczDPNEgJVf//b+8oPLbbdiWoqqIlxYWIiI5e+kHJ3VGtPfcJj4TutnUac/FNO6t6bVlkKWtO5dGw4j4r2n13M3h5bt//P9ydvWmWGYTVKEAACZWcGins5UEdaiKI/LGQ/QAQIs6ulMFWEtzjMuZzxAB0gRAgBk5psU9RRVRQgzQYoQOkCART1FVRHCTDDvQgdIEQIAZOabFPWoIqxCSojLGQ/QAQIs6lFFWIXzjMsZD9ABUoQAAJn5JkU9qghhUlKE0AFWsAAAMrOCRT1u0wCTMu9CBzjRqUcVYRVSQlzOeIAOkCIEAMjMChb1uE1DFc4zLmc8QAc40alHFSFMSooQOkCKEAAgMytYN7S6a0/bTZhz068iPPHWiYh47RsrU95vsn6/f/hXG/FxQcAwhtUfrP+X9TCMK/juxit33H5HXNmHEdGL3k0e1NpljXn3q2tPRsTSf1yKCcfDqOXGQxVHNk+mbViney+d6VWG3+Xj8PhPjr/910+m7fTOw8sHvnWgyl4SBlv+E6c0Aixa08LJ1lZqpsZ++zv6lx5f6rFKD2Rgq7l1x629Hb2YsHtrqTEebv13t0ZEQoO79tlWnEtn+qRHs9/rJ++0t61XZb+TtsrwG5EiBADIzAoWrVFF2KgOdW89LdzwtsZ4OB/n87WDeVBrAAsBmqR3aU0LOawuVW9JEVZUVqp6e2zP1w7mQa0B3KUpcfqkCAEAMrOCRWvKSs0wr8oah1KE5GRKbJLepTUdqiuxDj/DpAjpLlNTk6QIAQAys4JFazpU5qaKcIZJEVI0VYQzywoWAEBmwlda4zYNjXKbhopcg0XR3KZhZgmwaE1ZqZnitNC9ZSprHEoRklOXpsTpkyIEAMhM+Epr3KahUR3q3nqkCOkuKcImCbBoTYfK3FQRzjApQoqminBmSRECAGQmfKU1qggbpYqwIilCiqaKcGYJsGjP1D8per2WYo42zrPtPZ/EM+rW/q0R8V7axuZsrlLjRN++wyzRIClCAIDMbrl48WLbbQAAmCtWsAAAMhNgAQBkJsACAMhMgAUAkJkACwAgMwEWAEBmAiwAgMwEWAAAmQmwAAAyE2ABAGQmwAIAyEyABQCQmQALACAzARYAQGYCLACAzARYAACZCbAAADITYAEAZCbAAgDITIAFAJCZAAsAIDMBFgBAZgIsAIDMBFgAAJkJsAAAMhNgAQBkJsACAMhMgAUAkJkACwAgMwEWAEBmAiwAgMwEWAAAmQmwAAAyE2ABAGQmwAIAyEyABQCQmQALACAzARYAQGYCLACAzARYAACZCbAAADITYAEAZCbAAgDITIAFAJCZAAsAIDMBFgBAZgIsAIDMBFgAAJkJsAAAMhNgAQBkJsACAMhMgAUAkJkACwAgMwEWAEBmAiwAgMwEWAAAmQmwAAAyE2ABAGQmwAIAyEyABQCQmQALACAzARYAQGYCLACAzARYAACZCbAAADITYAEAZCbAAgDITIAFAJCZAAsAIDMBFgBAZgIsAIDMBFgAAJkJsAAAMhNgAQBkJsACAMhMgAUAkNn/D9MSqGlLBxwBAAAAAElFTkSuQmCC" alt="카카오톡 오픈채팅 QR">
+            <span>카카오톡 오픈채팅<br><em>@merryonly_rd7</em></span>
+          </a>
+          <a href="https://www.instagram.com/merryonly_rd7" target="_blank" rel="noopener">
+            <img src="data:image/png;base64,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" alt="인스타그램 QR">
+            <span>인스타그램<br><em>@merryonly_rd7</em></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section id="contact">
+  <div class="wrap">
+    <p class="kicker">문의</p>
+    <h2 class="h2 disp">함께 첫 걸음을 떼어봐요</h2>
+    <div class="contact-box">
+      <a class="btn" href="mailto:merryonlyrd7@gmail.com">이메일 보내기</a>
+      <span class="info">✉ merryonlyrd7@gmail.com</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <svg viewBox="0 0 100 100"><g transform="translate(50,55)" fill="var(--mark)">
+    <g transform="rotate(0)"><path d="M0,0 C-9,-4 -11,-16 -4,-23 Q0,-20 4,-23 C11,-16 9,-4 0,0Z"/></g>
+    <g transform="rotate(51.4)"><path d="M0,0 C-9,-4 -11,-16 -4,-23 Q0,-20 4,-23 C11,-16 9,-4 0,0Z"/></g>
+    <g transform="rotate(102.8)"><path d="M0,0 C-9,-4 -11,-16 -4,-23 Q0,-20 4,-23 C11,-16 9,-4 0,0Z"/></g>
+    <g transform="rotate(154.3)"><path d="M0,0 C-9,-4 -11,-16 -4,-23 Q0,-20 4,-23 C11,-16 9,-4 0,0Z"/></g>
+    <g transform="rotate(205.7)"><path d="M0,0 C-9,-4 -11,-16 -4,-23 Q0,-20 4,-23 C11,-16 9,-4 0,0Z"/></g>
+    <g transform="rotate(257.1)"><path d="M0,0 C-9,-4 -11,-16 -4,-23 Q0,-20 4,-23 C11,-16 9,-4 0,0Z"/></g>
+    <g transform="rotate(308.6)"><path d="M0,0 C-9,-4 -11,-16 -4,-23 Q0,-20 4,-23 C11,-16 9,-4 0,0Z"/></g>
+  </g></svg>
+  <p class="fm disp">Merry Road, Only You</p>
+  <p class="fc">ⓒ Merry Only Road Director</p>
+</footer>
+
+<!-- ============ INTAKE MODAL ============ -->
+<div class="modal-overlay" id="intakeModal" onclick="if(event.target===this)closeIntake()">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="상담 문진표">
+    <div class="modal-head">
+      <button class="modal-close" onclick="closeIntake()" aria-label="닫기">×</button>
+      <h3 id="intakeTitle">일곱 잎 솔루션 맞춤형 상담 문진표</h3>
+      <p>정확한 상담을 위해 고객님의 상황을 가장 잘 나타내는 항목에 체크(✔) 또는 작성해 주세요.</p>
+    </div>
+    <div class="modal-body">
+
+      <div class="intake-sec">
+        <h4>👤 내담자 기본 정보</h4>
+        <div class="intake-q">성함 / 연락처 / 이메일</div>
+        <div class="intake-opts">
+          <label>성함 <input class="intake-line" type="text"></label>
+          <label>연락처 <input class="intake-line" type="text"></label>
+          <label>이메일 <input class="intake-line" type="text"></label>
+        </div>
+        <div class="intake-q">오늘 가장 중점적으로 상담을 원하시는 분야는 무엇인가요? (복수 선택 가능)</div>
+        <div class="intake-opts">
+          <label><input type="checkbox"> 01. 병원비 환급</label>
+          <label><input type="checkbox"> 02. 보험/법률 컨설팅</label>
+          <label><input type="checkbox"> 03. 기초생활수급</label>
+          <label><input type="checkbox"> 04. LH 임대주택</label>
+          <label><input type="checkbox"> 05. 숨은 복지 찾기</label>
+          <label><input type="checkbox"> 06. 취업 지원</label>
+          <label><input type="checkbox"> 07. 진로/직업 상담</label>
+        </div>
+      </div>
+
+      <div class="intake-group" data-leaf="1">
+      <div class="intake-sec">
+        <h4>01. 위기 극복 — 의료기관 연계 및 병원비 환급</h4>
+        <p class="intake-note">* 적합한 의료기관을 연계해 드리고, 과도하게 지출된 병원비와 정부 지원금, 숨은 보험금을 찾아드리기 위한 질문입니다.</p>
+
+        <div class="intake-q">1. 어디가 불편하셔서 치료를 받으셨나요? (진료가 필요한 병명이나 증상)</div>
+        <input class="intake-line" type="text" style="width:100%">
+
+        <div class="intake-q">2. 현재 진료나 검사를 위해 새로운 병원 연계(소개/예약 지원)가 필요하신가요?</div>
+        <div class="intake-opts" style="flex-direction:column; gap:6px;">
+          <label><input type="radio" name="q2"> 아니오, 현재 다니는 병원이 있거나 필요 없습니다.</label>
+          <label><input type="radio" name="q2"> 네, 연계가 필요합니다.</label>
+        </div>
+        <div class="intake-opts intake-sub" style="margin-top:6px;">
+          <label><input type="checkbox"> 종합/대학병원</label>
+          <label><input type="checkbox"> 일반 병의원</label>
+          <label><input type="checkbox"> 재활/요양병원</label>
+          <label><input type="checkbox"> 정신건강의학과</label>
+          <label><input type="checkbox"> 치과/안과 등</label>
+        </div>
+
+        <div class="intake-q">3. 대략적인 치료 기간은 어떻게 되시나요?</div>
+        <div class="intake-opts">
+          <label><input type="radio" name="q3"> 1개월 미만</label>
+          <label><input type="radio" name="q3"> 1~3개월</label>
+          <label><input type="radio" name="q3"> 3~6개월</label>
+          <label><input type="radio" name="q3"> 6개월 이상</label>
+        </div>
+
+        <div class="intake-q">4. 가장 마지막으로 치료를 받으신 날짜(또는 퇴원일)는 언제인가요?</div>
+        <div class="intake-opts">
+          <label><input class="intake-line" type="text" style="min-width:70px"> 년</label>
+          <label><input class="intake-line" type="text" style="min-width:60px"> 월</label>
+          <label><input class="intake-line" type="text" style="min-width:60px"> 일</label>
+          <label><input type="checkbox"> 아직 계속 치료 중입니다.</label>
+        </div>
+
+        <div class="intake-q">5. 병원비로 지출하신 금액은 대략 얼마 정도인가요?</div>
+        <div class="intake-opts">
+          <label>총액 <input class="intake-line" type="text" style="min-width:90px"> 만원</label>
+          <label>(그 중 비급여 <input class="intake-line" type="text" style="min-width:90px"> 만원)</label>
+        </div>
+
+        <div class="intake-q">6. 개인적으로 가입해 두신 보험이 있으신가요? (모두 체크)</div>
+        <div class="intake-opts">
+          <label><input type="checkbox"> 실비 보험 (실손의료비)</label>
+          <label><input type="checkbox"> 암 / 건강 / 종합 보험</label>
+          <label><input type="checkbox"> 수술비 / 입원비 특약</label>
+          <label><input type="checkbox"> 가입 보험 없음 / 잘 모름</label>
+        </div>
+
+        <div class="intake-q">7. (보험이 있다면) 이번 병원비에 대해 보험 회사에 청구를 해보셨나요?</div>
+        <div class="intake-opts">
+          <label><input type="radio" name="q7"> 청구해서 보험금을 받음</label>
+          <label><input type="radio" name="q7"> 청구했는데 지급 거절됨</label>
+          <label><input type="radio" name="q7"> 아직 청구하지 않음 (방법을 모름 등)</label>
+        </div>
+
+        <div class="intake-q">8. 내가 가입한 보험의 숨은 보험금 확인이나 보장 분석이 필요하신가요?</div>
+        <div class="intake-opts">
+          <label><input type="radio" name="q8"> 네, 확인해 주세요.</label>
+          <label><input type="radio" name="q8"> 아니오, 괜찮습니다.</label>
+        </div>
+
+        <div class="intake-q">9. 국가에서 과도한 병원비를 지원해 주는 제도 대상이 되는지 확인해 드릴까요?</div>
+        <div class="intake-opts">
+          <label><input type="radio" name="q9"> 네, 요건에 맞는지 확인해 주세요.</label>
+          <label><input type="radio" name="q9"> 이미 신청했거나 지원 받음</label>
+          <label><input type="radio" name="q9"> 아니오</label>
+        </div>
+
+        <div class="intake-q">10. (정부 지원 요건 확인용) 현재 건강보험 자격이나 소득 상황은 어떠신가요?</div>
+        <div class="intake-opts">
+          <label><input type="radio" name="q10"> 기초생활수급자 또는 차상위계층</label>
+          <label><input type="radio" name="q10"> 일반 건강보험 가입자</label>
+          <label><input type="radio" name="q10"> 잘 모름 (상담 시 확인 요망)</label>
+        </div>
+
+        <div class="intake-q">11. 현재 병원에서 발급받아 가지고 계신 서류를 체크해 주세요.</div>
+        <div class="intake-opts">
+          <label><input type="checkbox"> 진료비 영수증</label>
+          <label><input type="checkbox"> 진료비 세부내역서</label>
+          <label><input type="checkbox"> 진단서 또는 소견서</label>
+          <label><input type="checkbox"> 없음</label>
+        </div>
+      </div>
+      </div>
+      <div class="intake-group" data-leaf="2" style="display:none;">
+      <div class="intake-sec">
+        <h4>02. 보험금 환급 · 민·형사 컨설팅</h4>
+        <p class="intake-note">* 정당하게 받아야 할 보험금이나 사고 관련 절차를 돕기 위한 질문입니다.</p>
+
+        <div class="intake-q">1. 어떤 사고나 피해가 있으셨나요? (간단히 적어주세요)</div>
+        <input class="intake-line" type="text" style="width:100%">
+
+        <div class="intake-q">2. 관련하여 가입해 두신 보험이 있으신가요? (아는 대로 체크)</div>
+        <div class="intake-opts">
+          <label><input type="checkbox"> 실손의료비(실비)</label>
+          <label><input type="checkbox"> 생명/건강보험</label>
+          <label><input type="checkbox"> 자동차보험</label>
+          <label><input type="checkbox"> 잘 모름</label>
+        </div>
+
+        <div class="intake-q">3. 현재 가장 답답하거나 해결하고 싶은 부분은 무엇인가요?</div>
+        <div class="intake-opts" style="flex-direction:column; gap:6px;">
+          <label><input type="checkbox"> 보험사에서 돈을 안 줘요</label>
+          <label><input type="checkbox"> 합의금을 어떻게 받아야 할지 모르겠어요</label>
+          <label><input type="checkbox"> 경찰 신고나 법적 절차가 막막해요</label>
+          <label style="display:flex;align-items:center;gap:6px;"><input type="checkbox"> 기타: <input class="intake-line" type="text" style="min-width:180px"></label>
+        </div>
+
+        <div class="intake-q">4. 현재 상황에서 전문가(변호사 또는 손해사정사)의 도움이 필요하신가요?</div>
+        <p class="intake-note">※ 손해사정사: 정확한 보험금/합의금 산출 및 청구 / 변호사: 소송, 경찰 조사, 형사 합의 등 법적 대응</p>
+        <div class="intake-opts" style="flex-direction:column; gap:6px;">
+          <label><input type="radio" name="i2q4"> 어떤 전문가가 필요한지 아직 잘 모르겠습니다. (상담을 통해 결정)</label>
+          <label><input type="radio" name="i2q4"> 보험금(합의금)을 제대로 계산해 줄 '손해사정사'가 필요할 것 같습니다.</label>
+          <label><input type="radio" name="i2q4"> 법적 다툼, 소송, 형사 사건을 도와줄 '변호사'가 필요할 것 같습니다.</label>
+          <label><input type="radio" name="i2q4"> 선임보다는 일단 기본적인 상담이나 조언만 먼저 받고 싶습니다.</label>
+          <label><input type="radio" name="i2q4"> 이미 도움을 받고 있는 전문가가 있습니다.</label>
+        </div>
+
+        <div class="intake-q">▶ 분쟁 중이거나 예상되는 금액 (보험금/합의금/피해액 등)</div>
+        <div class="intake-opts">
+          <label><input class="intake-line" type="text" style="min-width:120px"> 만원</label>
+        </div>
+      </div>
+      </div>
+
+      <div class="intake-group" data-leaf="3" style="display:none;">
+      <div class="intake-sec">
+        <h4>03. 기반 마련 · 기초생활수급</h4>
+        <p class="intake-note">* 수급 자격 확인 및 놓치기 쉬운 서류 준비를 돕기 위한 질문입니다.</p>
+
+        <div class="intake-q">1. 현재 함께 살고 있는 가족은 본인 포함 몇 명인가요?</div>
+        <div class="intake-opts">
+          <label>본인 포함 <input class="intake-line" type="text" style="min-width:90px"> 명</label>
+        </div>
+
+        <div class="intake-q">2. 현재 가장 지원이 시급한 부분은 무엇인가요? (복수 선택 가능)</div>
+        <div class="intake-opts">
+          <label><input type="checkbox"> 매월 생활비</label>
+          <label><input type="checkbox"> 병원비/약값</label>
+          <label><input type="checkbox"> 월세 등 주거비</label>
+          <label><input type="checkbox"> 자녀 교육비</label>
+          <label style="display:flex;align-items:center;gap:6px;"><input type="checkbox"> 기타: <input class="intake-line" type="text" style="min-width:180px"></label>
+        </div>
+
+        <div class="intake-q">3. 주민센터에 수급자 신청을 해보시거나 상담을 받아보신 적이 있나요?</div>
+        <div class="intake-opts" style="flex-direction:column; gap:6px;">
+          <label><input type="radio" name="i3q3"> 예, 신청해서 심사 중입니다.</label>
+          <label><input type="radio" name="i3q3"> 예, 신청했는데 떨어졌습니다.</label>
+          <label><input type="radio" name="i3q3"> 아니오, 아직 해본 적 없습니다.</label>
+        </div>
+
+        <div class="intake-q">4. 현재 일하시는 형태는 어떠신가요?</div>
+        <div class="intake-opts">
+          <label><input type="radio" name="i3q4"> 정규직/계약직</label>
+          <label><input type="radio" name="i3q4"> 일용직/아르바이트</label>
+          <label><input type="radio" name="i3q4"> 자영업</label>
+          <label><input type="radio" name="i3q4"> 무직 (일하지 않음)</label>
+        </div>
+
+        <div class="intake-q">5. 가구 전체의 대략적인 월 평균 수입(소득)은 얼마인가요?</div>
+        <div class="intake-opts">
+          <label><input class="intake-line" type="text" style="min-width:120px"> 만원 정도</label>
+          <label>(또는 <input type="checkbox"> 수입 없음)</label>
+        </div>
+
+        <div class="intake-q">6. 대략적인 현재 부채(빚) 수준은 어떻게 되시나요?</div>
+        <div class="intake-opts">
+          <label><input class="intake-line" type="text" style="min-width:120px"> 만원 정도</label>
+          <label>(또는 <input type="checkbox"> 없음)</label>
+        </div>
+
+        <div class="intake-q">7. 대략적인 현재 재산(보증금, 예적금 등) 수준은 어떻게 되시나요?</div>
+        <div class="intake-opts">
+          <label><input class="intake-line" type="text" style="min-width:120px"> 만원 정도</label>
+          <label>(또는 <input type="checkbox"> 없음)</label>
+        </div>
+      </div>
+      </div>
+
+      <div class="intake-group" data-leaf="4" style="display:none;">
+      <div class="intake-sec">
+        <h4>04. 안정 · LH 아파트 및 주거복지 연계</h4>
+        <p class="intake-note">* 든든한 보금자리, LH 임대주택 신청을 안내해 드리기 위한 질문입니다.</p>
+
+        <div class="intake-q">1. 현재 거주하시는 형태는 어떠신가요?</div>
+        <div class="intake-opts" style="flex-direction:column; gap:8px;">
+          <label style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;"><input type="checkbox"> 월세 (보증금 <input class="intake-line" type="text" style="min-width:70px"> 만원 / 월 <input class="intake-line" type="text" style="min-width:70px"> 만원)</label>
+          <label style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;"><input type="checkbox"> 전세 (보증금 <input class="intake-line" type="text" style="min-width:70px"> 만원)</label>
+          <div class="intake-opts">
+            <label><input type="checkbox"> 친척/지인 집</label>
+            <label><input type="checkbox"> 고시원/여관 등 임시거처</label>
+          </div>
+        </div>
+
+        <div class="intake-q">2. 임대주택 가점 및 우대 조건에 해당하는 사항이 있으신가요? (복수 선택)</div>
+        <div class="intake-opts">
+          <label><input type="checkbox"> 청년 (만 19~39세)</label>
+          <label><input type="checkbox"> 신혼부부 (혼인 7년 이내)</label>
+          <label><input type="checkbox"> 고령자 (만 65세 이상)</label>
+          <label><input type="checkbox"> 장애인</label>
+          <label><input type="checkbox"> 한부모가족</label>
+          <label><input type="checkbox"> 기초생활수급자/차상위계층</label>
+        </div>
+
+        <div class="intake-q">3. 주택 청약 종합 저축(청약통장)을 가지고 계신가요?</div>
+        <div class="intake-opts">
+          <label style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;"><input type="radio" name="i4q3"> 예 (가입 기간: 대략 <input class="intake-line" type="text" style="min-width:60px"> 년 / 납입 횟수: <input class="intake-line" type="text" style="min-width:60px"> 회)</label>
+          <label><input type="radio" name="i4q3"> 아니오</label>
+          <label><input type="radio" name="i4q3"> 잘 모름</label>
+        </div>
+
+        <div class="intake-q">4. 새로 이사하고 싶은 지역과 거주지 형태는 무엇인가요?</div>
+        <div class="intake-opts" style="flex-direction:column; gap:8px;">
+          <label style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">희망 지역 (예: 서울 OO구 등): <input class="intake-line" type="text" style="min-width:220px"></label>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><strong style="font-size:13.5px;color:var(--mark);">희망 주택 형태:</strong>
+            <label><input type="checkbox"> 아파트</label>
+            <label><input type="checkbox"> 빌라/다세대/다가구</label>
+            <label><input type="checkbox"> 원룸/오피스텔</label>
+            <label><input type="checkbox"> 형태 상관없음</label>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><strong style="font-size:13.5px;color:var(--mark);">필요한 방 개수:</strong>
+            <label><input type="checkbox"> 1개 (원룸형)</label>
+            <label><input type="checkbox"> 2개 (투룸형)</label>
+            <label><input type="checkbox"> 3개 이상</label>
+          </div>
+        </div>
+
+        <div class="intake-q">5. 새 집으로 이사할 때, 본인이 부담 가능한 보증금(예산)은 대략 얼마인가요?</div>
+        <div class="intake-opts">
+          <label><input class="intake-line" type="text" style="min-width:120px"> 만원 정도</label>
+          <label>(또는 <input type="checkbox"> 현재 마련하기 어려움)</label>
+        </div>
+
+        <div class="intake-q">6. 대략적인 신용 점수나 현재 신용 상태를 알고 계신가요? (임대보증금 대출 연계 시 파악 필요)</div>
+        <div class="intake-opts" style="flex-direction:column; gap:6px;">
+          <label><input type="radio" name="i4q6"> 양호함 (일반적인 대출에 문제 없음)</label>
+          <label><input type="radio" name="i4q6"> 점수가 낮음 (과거 연체 기록 등)</label>
+          <label><input type="radio" name="i4q6"> 전혀 모름</label>
+          <label><input type="radio" name="i4q6"> 현재 연체 중이거나 신용불량 상태</label>
+          <label><input type="radio" name="i4q6"> 신용회복 / 개인회생 / 파산 진행 중</label>
+        </div>
+      </div>
+      </div>
+
+      <div class="intake-group" data-leaf="5" style="display:none;">
+      <div class="intake-sec">
+        <h4>05. 숨은 혜택 · 숨은 복지 발굴</h4>
+        <p class="intake-note">* 모르고 지나쳤던 맞춤형 지원 제도를 찾아드리기 위한 질문입니다.</p>
+
+        <div class="intake-q">1. 현재 생활하시면서 가장 큰 어려움은 무엇인가요? (복수 선택)</div>
+        <div class="intake-opts">
+          <label><input type="checkbox"> 생활비 부족</label>
+          <label><input type="checkbox"> 몸이 아파서 거동이 힘듦</label>
+          <label><input type="checkbox"> 외로움/우울감</label>
+          <label><input type="checkbox"> 아이/노인 돌봄 문제</label>
+          <label><input type="checkbox"> 주거(집) 문제</label>
+          <label><input type="checkbox"> 일자리/취업 문제</label>
+          <label><input type="checkbox"> 빚/채무 문제</label>
+        </div>
+
+        <div class="intake-q">2. 현재 받고 계신 정부 지원금이나 복지 혜택이 있다면 적어주세요. (모르면 비워두셔도 됩니다)</div>
+        <input class="intake-line" type="text" style="width:100%">
+
+        <div class="intake-q">3. 주민센터에 가서 서류를 떼거나 신청하는 것이 혼자서 가능하신가요?</div>
+        <div class="intake-opts">
+          <label><input type="radio" name="i5q3"> 혼자서 가능해요</label>
+          <label><input type="radio" name="i5q3"> 누군가 같이 가주거나 도와주면 좋겠어요</label>
+        </div>
+
+        <div class="intake-q">4. 현재 거주하시는 곳에서 가장 가까운 관할 주민센터(행정복지센터)가 어디인지 아시나요?</div>
+        <input class="intake-line" type="text" style="width:100%">
+      </div>
+      </div>
+
+      <div class="intake-group" data-leaf="6" style="display:none;">
+      <div class="intake-sec">
+        <h4>06. 도약 · 취업 지원</h4>
+        <p class="intake-note">* 다시 일어설 수 있도록 취업까지 실질적으로 도와드리기 위한 질문입니다.</p>
+
+        <div class="intake-q">1. 과거에 어떤 일을 주로 하셨나요? (가장 오래 하신 일이나 보유하신 기술 등을 자유롭게 적어주세요.)</div>
+        <input class="intake-line" type="text" style="width:100%">
+
+        <div class="intake-q">2. 마지막으로 일하신 후, 현재까지 일을 쉬신 기간은 대략 얼마나 되시나요?</div>
+        <div class="intake-opts">
+          <label><input type="radio" name="i6q2"> 3개월 미만 (최근까지 일함)</label>
+          <label><input type="radio" name="i6q2"> 3개월 ~ 6개월</label>
+          <label><input type="radio" name="i6q2"> 6개월 ~ 1년</label>
+          <label><input type="radio" name="i6q2"> 1년 ~ 3년</label>
+          <label><input type="radio" name="i6q2"> 3년 이상</label>
+        </div>
+
+        <div class="intake-q">3. 현재 조금이라도 일을 하고 계신가요? (아르바이트, 일용직 등 포함)</div>
+        <div class="intake-opts" style="flex-direction:column; gap:6px;">
+          <label><input type="radio" name="i6q3"> 쉬고 있음 (전업 구직 중)</label>
+          <label style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;"><input type="radio" name="i6q3"> 현재 일하고 있음 (형태: <input class="intake-line" type="text" style="min-width:120px"> / 월 급여 대략: <input class="intake-line" type="text" style="min-width:90px"> 만원)</label>
+        </div>
+
+        <div class="intake-q">4. 앞으로 일자리를 구하신다면 어떤 근무 형태를 원하시나요?</div>
+        <div class="intake-opts">
+          <label><input type="checkbox"> 풀타임 (정규직, 주 5일 등)</label>
+          <label><input type="checkbox"> 파트타임 (알바, 시간제, 오전/오후반 등)</label>
+          <label><input type="checkbox"> 단기 근로 (일용직, 프리랜서 등)</label>
+          <label><input type="checkbox"> 형태 상관없음 (무관)</label>
+        </div>
+
+        <div class="intake-q">5. 희망하시는 직업 분야나 관심 있는 직무가 있으신가요? (예: 사무직, 요식업, 생산직, 돌봄/요양, 경비/미화 등)</div>
+        <input class="intake-line" type="text" style="width:100%">
+
+        <div class="intake-q">6. 일자리를 구하는 데 있어 현재 가장 큰 걱정거리나 방해 요인은 무엇인가요? (복수 선택 가능)</div>
+        <div class="intake-opts">
+          <label><input type="checkbox"> 건강 문제 및 체력 저하</label>
+          <label><input type="checkbox"> 오랜 경력 단절 또는 나이</label>
+          <label><input type="checkbox"> 관련 기술 및 자격증 부족</label>
+          <label><input type="checkbox"> 출퇴근 거리 및 교통편</label>
+          <label><input type="checkbox"> 자녀 또는 노인 돌봄 의무</label>
+          <label style="display:flex;align-items:center;gap:6px;"><input type="checkbox"> 기타: <input class="intake-line" type="text" style="min-width:160px"></label>
+        </div>
+
+        <div class="intake-q">7. 취업을 위해 어떤 도움이 가장 필요하신가요? (필요한 만큼 모두 체크해 주세요.)</div>
+        <div class="intake-opts" style="flex-direction:column; gap:6px;">
+          <label><input type="checkbox"> 이력서 및 자기소개서 작성 도움</label>
+          <label><input type="checkbox"> 면접 연습 및 코칭 (면접 요령 등)</label>
+          <label><input type="checkbox"> 새로운 기술이나 자격증 배우기 (직업훈련 / 국민내일배움카드 등)</label>
+          <label><input type="checkbox"> 내 조건(나이, 경력, 건강 등)에 맞는 맞춤형 일자리 추천받기</label>
+          <label><input type="checkbox"> 취업 관련 복지 및 지원 제도 연계 (국민취업지원제도 등)</label>
+          <label><input type="checkbox"> 이력서용 사진 촬영 지원이나 면접 복장 대여 안내</label>
+          <label style="display:flex;align-items:center;gap:6px;"><input type="checkbox"> 기타: <input class="intake-line" type="text" style="min-width:160px"></label>
+        </div>
+      </div>
+      </div>
+
+      <div class="intake-group" data-leaf="7" style="display:none;">
+      <div class="intake-sec">
+        <h4>07. 자아 탐색 · 직업상담</h4>
+        <p class="intake-note">* 진짜 나를 알아가고 진로 방향을 함께 고민하기 위한 질문입니다.</p>
+
+        <div class="intake-q">1. 평소에 흥미를 느끼거나 관심 있던 분야가 있으신가요?</div>
+        <input class="intake-line" type="text" style="width:100%">
+
+        <div class="intake-q">2. 직업을 선택할 때 가장 중요하게 생각하는 것은 무엇인가요? (1~2개 체크)</div>
+        <div class="intake-opts">
+          <label><input type="checkbox"> 월급(돈)</label>
+          <label><input type="checkbox"> 고용 안정성</label>
+          <label><input type="checkbox"> 개인 시간(워라밸)</label>
+          <label><input type="checkbox"> 일의 재미와 보람</label>
+          <label style="display:flex;align-items:center;gap:6px;"><input type="checkbox"> 기타: <input class="intake-line" type="text" style="min-width:150px"></label>
+        </div>
+
+        <div class="intake-q">3. 본인이 생각하는 나의 가장 큰 장점은 무엇인가요? (예: 꼼꼼하다, 사람들과 잘 어울린다 등)</div>
+        <input class="intake-line" type="text" style="width:100%">
+
+        <div class="intake-q">4. 반대로, 본인이 생각하는 나의 단점이나 보완해야 할 점은 무엇인가요?</div>
+        <input class="intake-line" type="text" style="width:100%">
+
+        <div class="intake-q">5. 지금 진로나 취업에 대해 가장 고민되는 점은 무엇인가요?</div>
+        <input class="intake-line" type="text" style="width:100%">
+
+        <div class="intake-q">6. 과거에 기관이나 학교에서 직업/성향 검사(MBTI, 직업선호도 등)를 받아보신 적이 있나요?</div>
+        <div class="intake-opts">
+          <label style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;"><input type="radio" name="i7q6"> 예 (결과나 성향: <input class="intake-line" type="text" style="min-width:180px"> )</label>
+          <label><input type="radio" name="i7q6"> 아니오</label>
+        </div>
+
+        <div class="intake-q">7. 보유하고 계신 자격증이나 외부 활동(동아리, 공모전, 봉사 등) 이력이 있다면 적어주세요.</div>
+        <input class="intake-line" type="text" style="width:100%">
+
+        <div class="intake-q">8. 개인적으로 프리랜서로 일해본 경험이나 개인 프로젝트 진행 경험이 있으신가요?</div>
+        <input class="intake-line" type="text" style="width:100%">
+
+        <div class="intake-q">9. 취업이나 면접에 활용할 수 있는 포트폴리오(작업물, 블로그, SNS 등)가 있으신가요?</div>
+        <div class="intake-opts">
+          <label><input type="radio" name="i7q9"> 예 (준비되어 있음)</label>
+          <label><input type="radio" name="i7q9"> 준비 중입니다</label>
+          <label><input type="radio" name="i7q9"> 아니오 (없음/잘 모름)</label>
+        </div>
+
+        <div class="intake-q">10. 대학교(또는 최종 학력) 관련 정보를 적어주세요. (전공, 졸업/재학/휴학 여부 등)</div>
+        <input class="intake-line" type="text" style="width:100%">
+      </div>
+      </div>
+
+      <div class="modal-cta">
+        <a class="kko" href="https://open.kakao.com/me/merryonly_rd7" target="_blank" rel="noopener">작성 내용 들고 카카오톡으로 상담하기</a>
+        <a class="sec" href="#" onclick="closeIntake();return false;">닫기</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  const menuBtn = document.getElementById('menuBtn');
+  const navLinks = document.getElementById('navLinks');
+  menuBtn.addEventListener('click', () => navLinks.classList.toggle('open'));
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+  const intakeModal = document.getElementById('intakeModal');
+  const intakeTitle = document.getElementById('intakeTitle');
+  const leafTitles = {
+    1: '01. 위기 극복 — 의료기관 연계 및 병원비 환급',
+    2: '02. 보험금 환급 · 민·형사 컨설팅',
+    3: '03. 기반 마련 · 기초생활수급',
+    4: '04. 안정 · LH 아파트 및 주거복지 연계',
+    5: '05. 숨은 혜택 · 숨은 복지 발굴',
+    6: '06. 도약 · 취업 지원',
+    7: '07. 자아 탐색 · 직업상담'
+  };
+  function openIntake(leaf){
+    document.querySelectorAll('.intake-group').forEach(g => {
+      g.style.display = (g.getAttribute('data-leaf') === String(leaf)) ? '' : 'none';
+    });
+    intakeTitle.textContent = leafTitles[leaf] ? leafTitles[leaf] + ' · 상담 문진표' : '일곱 잎 솔루션 맞춤형 상담 문진표';
+    intakeModal.classList.add('open');
+    intakeModal.scrollTop = 0;
+    document.body.style.overflow = 'hidden';
+  }
+  function closeIntake(){ intakeModal.classList.remove('open'); document.body.style.overflow=''; }
+  document.addEventListener('keydown', e => { if(e.key==='Escape') closeIntake(); });
+</script>
+
+</body>
+</html>
